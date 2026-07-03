@@ -21,6 +21,10 @@ const THUMBS_DIR = path.join(root, 'public', 'thumbs');
 
 const THUMB_W = 256;
 const THUMB_H = 342;
+// World meters mapped to the full thumbnail height. Must match REF_HEIGHT_M
+// in CharacterTile.tsx so the thumbnail and the live splat align during the
+// crossfade (and taller models read as taller on the board).
+const REF_HEIGHT_M = 2.3;
 
 // --- deterministic RNG (mulberry32) seeded from the model id ---------------
 
@@ -227,9 +231,11 @@ function encodeSplat(gaussians) {
   const buf = Buffer.alloc(gaussians.length * 32);
   gaussians.forEach((p, i) => {
     const o = i * 32;
+    // .splat convention is y-down (drei's loader keeps y and negates z), so
+    // flip y here to render upright without a corrective rotation in the tile
     buf.writeFloatLE(p.x, o);
-    buf.writeFloatLE(p.y, o + 4);
-    buf.writeFloatLE(-p.z, o + 8); // loader negates z back
+    buf.writeFloatLE(-p.y, o + 4);
+    buf.writeFloatLE(-p.z, o + 8);
     buf.writeFloatLE(p.s, o + 12);
     buf.writeFloatLE(p.s, o + 16);
     buf.writeFloatLE(p.s, o + 20);
@@ -296,11 +302,11 @@ function encodePng(width, height, rgba) {
 // --- thumbnail rasterizer ------------------------------------------------------
 
 /** Orthographic front view: splat the gaussians back-to-front onto RGBA. */
-function renderThumb(gaussians, heightM) {
+function renderThumb(gaussians) {
   const w = THUMB_W;
   const h = THUMB_H;
   const px = new Float32Array(w * h * 4); // premultiplied rgb + alpha
-  const pxPerM = h / (heightM * 1.18);
+  const pxPerM = h / REF_HEIGHT_M;
   const cx = w / 2;
   const cy = h / 2;
 
@@ -355,7 +361,7 @@ for (const meta of metas) {
   const gaussians = buildFigure(meta, rng);
   const splat = encodeSplat(gaussians);
   await writeFile(path.join(SPLATS_DIR, `${meta.id}.splat`), splat);
-  await writeFile(path.join(THUMBS_DIR, `${meta.id}.png`), renderThumb(gaussians, meta.heightCm / 100));
+  await writeFile(path.join(THUMBS_DIR, `${meta.id}.png`), renderThumb(gaussians));
   console.log(
     `${meta.id}: ${gaussians.length} gaussians, ${(splat.length / 1024).toFixed(0)} KB`
   );

@@ -39,6 +39,7 @@ export function useDragPan() {
       s.totalDist = 0;
       s.vx = 0;
       s.vy = 0;
+      useBoardStore.getState().setPanTarget(null); // user takes over the camera
       el.setPointerCapture(e.pointerId);
     };
 

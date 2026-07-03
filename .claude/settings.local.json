@@ -8,7 +8,10 @@
       "PowerShell(npm run build)",
       "PowerShell(git init)",
       "PowerShell(git add -A)",
-      "PowerShell($f = New-Object byte[] \\(9MB\\); [IO.File]::WriteAllBytes\\(\"$PWD\\\\public\\\\splats\\\\oversized-test.splat\", $f\\); npm run manifest; Write-Host \"exit code: $LASTEXITCODE\"; Remove-Item \"$PWD\\\\public\\\\splats\\\\oversized-test.splat\" -Confirm:$false)"
+      "PowerShell($f = New-Object byte[] \\(9MB\\); [IO.File]::WriteAllBytes\\(\"$PWD\\\\public\\\\splats\\\\oversized-test.splat\", $f\\); npm run manifest; Write-Host \"exit code: $LASTEXITCODE\"; Remove-Item \"$PWD\\\\public\\\\splats\\\\oversized-test.splat\" -Confirm:$false)",
+      "PowerShell(node scripts/generate-placeholder-splats.mjs)",
+      "PowerShell(npm i -D @astrojs/check)",
+      "PowerShell(npx astro check)"
     ]
   }
 }

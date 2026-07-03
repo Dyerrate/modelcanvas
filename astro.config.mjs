@@ -6,4 +6,10 @@ import react from '@astrojs/react';
 export default defineConfig({
   output: 'static',
   integrations: [react()],
+  vite: {
+    resolve: {
+      // keep a single three instance across drei's transitive deps
+      dedupe: ['three'],
+    },
+  },
 });
