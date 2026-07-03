@@ -7,7 +7,8 @@
       "PowerShell(npm ls three @react-three/fiber @react-three/drei astro react zustand)",
       "PowerShell(npm run build)",
       "PowerShell(git init)",
-      "PowerShell(git add -A)"
+      "PowerShell(git add -A)",
+      "PowerShell($f = New-Object byte[] \\(9MB\\); [IO.File]::WriteAllBytes\\(\"$PWD\\\\public\\\\splats\\\\oversized-test.splat\", $f\\); npm run manifest; Write-Host \"exit code: $LASTEXITCODE\"; Remove-Item \"$PWD\\\\public\\\\splats\\\\oversized-test.splat\" -Confirm:$false)"
     ]
   }
 }

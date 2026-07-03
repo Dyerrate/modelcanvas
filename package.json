@@ -7,7 +7,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "manifest": "node scripts/build-splat-manifest.mjs",
+    "splats:placeholder": "node scripts/generate-placeholder-splats.mjs",
+    "prebuild": "npm run manifest",
+    "predev": "npm run manifest"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.0",
