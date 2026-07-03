@@ -1,0 +1,17 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# splat source files (.ply) — never shipped
+assets-src/
+
+# environment
+.env
+.env.production
+
+# os
+.DS_Store
+Thumbs.db
