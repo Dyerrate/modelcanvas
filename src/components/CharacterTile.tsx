@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import { useCursor, useTexture } from '@react-three/drei';
-import { SRGBColorSpace, type MeshBasicMaterial } from 'three';
+import { SRGBColorSpace, type Group, type MeshBasicMaterial } from 'three';
 import type { SplatEntry } from '../types/manifest';
 import { useBoardStore } from '../hooks/useBoardStore';
 import SplatModel from './SplatModel';
@@ -44,6 +44,7 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
   const texture = useTexture(entry.thumbUrl, (t) => {
     t.colorSpace = SRGBColorSpace;
   });
+  const root = useRef<Group>(null);
   const mat = useRef<MeshBasicMaterial>(null);
   const grace = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const invalidate = useThree((s) => s.invalidate);
@@ -128,8 +129,14 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
     promote(true);
   };
 
-  // thumbnail crossfade: opacity → 0 while live, back → 1 otherwise
-  useFrame((_, delta) => {
+  // manual frustum culling (ortho AABB) + thumbnail crossfade
+  useFrame(({ size, camera }, delta) => {
+    if (root.current) {
+      const { panX, panY } = useBoardStore.getState();
+      const halfW = size.width / (2 * camera.zoom) + TILE_PLANE_W;
+      const halfH = size.height / (2 * camera.zoom) + TILE_PLANE_H;
+      root.current.visible = Math.abs(x - panX) < halfW && Math.abs(y - panY) < halfH;
+    }
     const m = mat.current;
     if (!m) return;
     const target = state === 'live' ? 0 : 1;
@@ -144,7 +151,7 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
   });
 
   return (
-    <group position={[x, y, 0]}>
+    <group ref={root} position={[x, y, 0]}>
       {state !== 'thumbnail' && (
         <group scale={SPLAT_SCALE}>
           <SplatModel entry={entry} onReady={onReady} />
