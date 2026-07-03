@@ -1,5 +1,13 @@
 import { create } from 'zustand';
 
+/**
+ * Transient per-frame motion info, deliberately outside React state so the
+ * drag hook can write it every pointer move without triggering renders.
+ * `speed` is the smoothed pan speed in world units/s; MotionFx maps it to
+ * the drag blur/scratch effect.
+ */
+export const motionState = { speed: 0 };
+
 interface BoardState {
   /** Camera-style pan over the board, in world units. The board group is
    *  positioned at [-panX, -panY, 0]. */
@@ -49,3 +57,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     set({ panTarget: { x: clamp(target.x, bounds.x), y: clamp(target.y, bounds.y) } });
   },
 }));
+
+// dev-only handle for poking the board from the console / test tooling
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  (window as unknown as Record<string, unknown>).__boardStore = useBoardStore;
+}

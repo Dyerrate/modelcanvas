@@ -1,13 +1,14 @@
+import { useEffect, useState } from 'react';
 import manifest from '../data/splat-manifest.json';
-import type { SplatEntry } from '../types/manifest';
+import type { ModelMeta, SplatEntry } from '../types/manifest';
 import { useBoardStore } from '../hooks/useBoardStore';
 
 const entries = manifest as SplatEntry[];
 
 function formatHeight(cm: number): string {
-  const totalIn = cm / 2.54;
+  const totalIn = Math.round(cm / 2.54); // round before splitting so 182cm → 6'0", not 5'12"
   const ft = Math.floor(totalIn / 12);
-  const inches = Math.round(totalIn - ft * 12);
+  const inches = totalIn % 12;
   return `${cm} cm / ${ft}'${inches}"`;
 }
 
@@ -20,11 +21,24 @@ export default function DetailPanel() {
   const entry = entries.find((e) => e.id === selectedId);
   const meta = entry?.meta;
 
+  // keep the last content mounted so the panel slides out full, not empty
+  const [lastMeta, setLastMeta] = useState<ModelMeta | undefined>(meta);
+  if (meta && meta !== lastMeta) setLastMeta(meta);
+  const shown = meta ?? lastMeta;
+
   const close = () => {
     const store = useBoardStore.getState();
     store.setSelected(null);
     store.setPanTarget(null);
   };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   return (
     <>
@@ -34,6 +48,7 @@ export default function DetailPanel() {
           top: 0;
           right: 0;
           bottom: 0;
+          z-index: 10;
           width: 360px;
           max-width: 90vw;
           box-sizing: border-box;
@@ -123,42 +138,42 @@ export default function DetailPanel() {
         }
       `}</style>
       <aside className={`detail-panel${meta ? ' open' : ''}`} aria-hidden={!meta}>
-        {meta && (
+        {shown && (
           <>
             <button className="close" onClick={close} aria-label="Close details">
               ✕
             </button>
-            <h2>{meta.name}</h2>
+            <h2>{shown.name}</h2>
             <p className="sub">
-              {meta.agency} — {meta.city}
+              {shown.agency} — {shown.city}
             </p>
             <div className="measurements">
-              {meta.bustCm} · {meta.waistCm} · {meta.hipsCm}
+              {shown.bustCm} · {shown.waistCm} · {shown.hipsCm}
             </div>
             <div className="measurements-label">Bust · Waist · Hips (cm)</div>
             <dl>
               <div>
                 <dt>Height</dt>
-                <dd>{formatHeight(meta.heightCm)}</dd>
+                <dd>{formatHeight(shown.heightCm)}</dd>
               </div>
               <div>
                 <dt>Weight</dt>
-                <dd>{formatWeight(meta.weightKg)}</dd>
+                <dd>{formatWeight(shown.weightKg)}</dd>
               </div>
               <div>
                 <dt>Shoe</dt>
-                <dd>EU {meta.shoeEu}</dd>
+                <dd>EU {shown.shoeEu}</dd>
               </div>
               <div>
                 <dt>Hair</dt>
-                <dd>{meta.hair}</dd>
+                <dd>{shown.hair}</dd>
               </div>
               <div>
                 <dt>Eyes</dt>
-                <dd>{meta.eyes}</dd>
+                <dd>{shown.eyes}</dd>
               </div>
             </dl>
-            <p className="bio">{meta.bio}</p>
+            <p className="bio">{shown.bio}</p>
           </>
         )}
       </aside>

@@ -8,8 +8,13 @@ import { useBoardStore } from '../hooks/useBoardStore';
 import { useDragPan } from '../hooks/useDragPan';
 import CharacterTile from './CharacterTile';
 
-export const TILE_SPACING = 2.2;
-const PAN_MARGIN = 1.5;
+// spread the models far apart — the board should feel like a space to
+// wander, not a contact sheet
+export const TILE_SPACING = 6.0;
+const JITTER_X = 1.5;
+const JITTER_Y = 1.2;
+const GRID_WIDEN = 1.15; // bias toward more columns than a square grid
+const PAN_MARGIN = 3.0;
 const PAN_EASE = 6; // 1/s, exponential approach to panTarget
 
 const entries = manifest as SplatEntry[];
@@ -23,16 +28,30 @@ export interface TilePlacement {
   y: number;
 }
 
+/** Deterministic 0..1 hash so the scatter is stable across reloads. */
+function hash01(str: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return ((h >>> 8) & 0xffffff) / 0x1000000;
+}
+
 export function computeGrid(list: SplatEntry[]): TilePlacement[] {
-  const cols = Math.ceil(Math.sqrt(list.length));
+  const cols = Math.ceil(Math.sqrt(list.length) * GRID_WIDEN);
   const rows = Math.ceil(list.length / cols);
   return list.map((entry, i) => {
     const col = i % cols;
     const row = Math.floor(i / cols);
     return {
       entry,
-      x: (col - (cols - 1) / 2) * TILE_SPACING,
-      y: ((rows - 1) / 2 - row) * TILE_SPACING,
+      x:
+        (col - (cols - 1) / 2) * TILE_SPACING +
+        (hash01(`${entry.id}:x`) * 2 - 1) * JITTER_X,
+      y:
+        ((rows - 1) / 2 - row) * TILE_SPACING +
+        (hash01(`${entry.id}:y`) * 2 - 1) * JITTER_Y,
     };
   });
 }
@@ -45,15 +64,10 @@ export default function Board() {
   const placements = useMemo(() => computeGrid(entries), []);
 
   useEffect(() => {
-    const cols = Math.ceil(Math.sqrt(entries.length));
-    const rows = Math.ceil(entries.length / cols);
-    useBoardStore
-      .getState()
-      .setBounds(
-        ((cols - 1) / 2) * TILE_SPACING + PAN_MARGIN,
-        ((rows - 1) / 2) * TILE_SPACING + PAN_MARGIN
-      );
-  }, []);
+    const bx = Math.max(...placements.map((p) => Math.abs(p.x))) + PAN_MARGIN;
+    const by = Math.max(...placements.map((p) => Math.abs(p.y))) + PAN_MARGIN;
+    useBoardStore.getState().setBounds(bx, by);
+  }, [placements]);
 
   // apply pan imperatively — no React re-render per pointer move — and ease
   // toward panTarget when a tile was selected

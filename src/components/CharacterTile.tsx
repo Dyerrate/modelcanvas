@@ -5,6 +5,12 @@ import { SRGBColorSpace, type Group, type MeshBasicMaterial } from 'three';
 import type { SplatEntry } from '../types/manifest';
 import { useBoardStore } from '../hooks/useBoardStore';
 import SplatModel from './SplatModel';
+import {
+  FOCUS_ZOOM,
+  MOBILE_BREAKPOINT_PX,
+  MOBILE_SHEET_FRACTION,
+  PANEL_WIDTH_PX,
+} from '../config/board';
 
 export const TILE_PLANE_H = 1.9;
 export const TILE_PLANE_W = TILE_PLANE_H * (256 / 342); // thumbnail aspect
@@ -14,10 +20,9 @@ const REF_HEIGHT_M = 2.3;
 const SPLAT_SCALE = TILE_PLANE_H / REF_HEIGHT_M;
 const DEMOTE_GRACE_MS = 300;
 const FADE_SECONDS = 0.15;
+/** Slower fade for hiding/revealing the rest of the board in focus mode. */
+const FOCUS_FADE_SECONDS = 0.35;
 const CLICK_MAX_DRIFT_PX = 5;
-/** Width of the HTML detail panel; the pan target shifts by half of it so a
- *  selected tile centers in the space the panel leaves free. */
-const PANEL_WIDTH_PX = 360;
 
 type TileState = 'thumbnail' | 'loading' | 'live' | 'demoting';
 
@@ -100,13 +105,17 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
 
   useEffect(() => () => clearTimeout(grace.current), []);
 
+  const liveAt = useRef(0);
   const onReady = useCallback(() => {
+    liveAt.current = performance.now();
     setState((s) => (s === 'loading' ? 'live' : s));
     invalidate();
   }, [invalidate]);
 
   const onPointerOver = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
+    const sel = useBoardStore.getState().selectedId;
+    if (sel !== null && sel !== entry.id) return; // faded out in focus mode
     setHovered(true);
     promote();
   };
@@ -120,12 +129,19 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
     if (e.delta > CLICK_MAX_DRIFT_PX) return; // that was a drag, not a click
     e.stopPropagation();
     const store = useBoardStore.getState();
+    if (store.selectedId !== null && store.selectedId !== entry.id) {
+      store.setSelected(null); // clicking a faded tile exits focus mode
+      return;
+    }
     store.setSelected(entry.id);
-    const panelShift =
-      typeof window !== 'undefined' && window.innerWidth > 768
-        ? PANEL_WIDTH_PX / (2 * e.camera.zoom)
-        : 0;
-    store.setPanTarget({ x: x + panelShift, y });
+    // center the tile in the space the panel leaves free, at the zoom the
+    // camera is easing toward
+    if (typeof window !== 'undefined' && window.innerWidth <= MOBILE_BREAKPOINT_PX) {
+      const sheetShift = (MOBILE_SHEET_FRACTION / 2) * (window.innerHeight / FOCUS_ZOOM);
+      store.setPanTarget({ x, y: y - sheetShift });
+    } else {
+      store.setPanTarget({ x: x + PANEL_WIDTH_PX / (2 * FOCUS_ZOOM), y });
+    }
     promote(true);
   };
 
@@ -137,15 +153,25 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
       const halfH = size.height / (2 * camera.zoom) + TILE_PLANE_H;
       root.current.visible = Math.abs(x - panX) < halfW && Math.abs(y - panY) < halfH;
     }
+    // the splat's sort worker responds outside React, so with a demand
+    // frameloop nothing would paint its results — keep frames flowing while
+    // it streams in and briefly after it goes live
+    if (state === 'loading' || (state === 'live' && performance.now() - liveAt.current < 600)) {
+      invalidate();
+    }
     const m = mat.current;
     if (!m) return;
-    const target = state === 'live' ? 0 : 1;
+    // focus mode hides every tile except the selected one
+    const sel = useBoardStore.getState().selectedId;
+    const focusHidden = sel !== null && sel !== entry.id;
+    const target = focusHidden || state === 'live' ? 0 : 1;
     const diff = target - m.opacity;
     if (diff === 0) {
       if (state === 'demoting') setState('thumbnail'); // fade finished → unmount
       return;
     }
-    const step = Math.sign(diff) * Math.min(Math.abs(diff), delta / FADE_SECONDS);
+    const seconds = focusHidden ? FOCUS_FADE_SECONDS : FADE_SECONDS;
+    const step = Math.sign(diff) * Math.min(Math.abs(diff), delta / seconds);
     m.opacity += step;
     invalidate();
   });

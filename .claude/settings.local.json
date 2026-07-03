@@ -13,7 +13,8 @@
       "PowerShell(npm i -D @astrojs/check)",
       "PowerShell(npx astro check)",
       "PowerShell(npm run build 2>$null)",
-      "PowerShell($dist = Get-ChildItem dist -Recurse -File; \"$\\($dist.Count\\) files, $\\([math]::Round\\(\\($dist | Measure-Object Length -Sum\\).Sum / 1MB, 1\\)\\) MB total\"; Get-ChildItem dist; Get-ChildItem dist\\\\splats | Select-Object -First 3 Name)"
+      "PowerShell($dist = Get-ChildItem dist -Recurse -File; \"$\\($dist.Count\\) files, $\\([math]::Round\\(\\($dist | Measure-Object Length -Sum\\).Sum / 1MB, 1\\)\\) MB total\"; Get-ChildItem dist; Get-ChildItem dist\\\\splats | Select-Object -First 3 Name)",
+      "PowerShell(npx astro check 2>$null)"
     ]
   }
 }

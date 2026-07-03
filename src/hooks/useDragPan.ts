@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { useBoardStore } from './useBoardStore';
+import { motionState, useBoardStore } from './useBoardStore';
 
 const DRAG_DEAD_ZONE_PX = 4; // movement under this is a tap, not a drag
 const VELOCITY_EMA_ALPHA = 0.3;
@@ -53,7 +53,10 @@ export function useDragPan() {
 
       if (!s.dragging && s.totalDist > DRAG_DEAD_ZONE_PX) {
         s.dragging = true;
-        useBoardStore.getState().setDragging(true);
+        const store = useBoardStore.getState();
+        store.setDragging(true);
+        // grabbing the board exits focus mode — the user wants to explore
+        if (store.selectedId) store.setSelected(null);
       }
       if (!s.dragging) return;
 
@@ -71,6 +74,7 @@ export function useDragPan() {
       s.lastT = now;
       s.vx = s.vx * (1 - VELOCITY_EMA_ALPHA) + (wx / dt) * VELOCITY_EMA_ALPHA;
       s.vy = s.vy * (1 - VELOCITY_EMA_ALPHA) + (wy / dt) * VELOCITY_EMA_ALPHA;
+      motionState.speed = Math.hypot(s.vx, s.vy);
       invalidate();
     };
 
@@ -101,6 +105,7 @@ export function useDragPan() {
       s.dragging = false;
       s.vx = 0;
       s.vy = 0;
+      motionState.speed = 0;
       useBoardStore.getState().setDragging(false);
       return;
     }
@@ -110,6 +115,7 @@ export function useDragPan() {
     const decay = Math.exp(-MOMENTUM_DAMPING * delta);
     s.vx *= decay;
     s.vy *= decay;
+    motionState.speed = Math.hypot(s.vx, s.vy);
     invalidate();
   });
 }
