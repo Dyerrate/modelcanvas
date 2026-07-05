@@ -74,6 +74,8 @@ export function useDragPan() {
       s.lastT = now;
       s.vx = s.vx * (1 - VELOCITY_EMA_ALPHA) + (wx / dt) * VELOCITY_EMA_ALPHA;
       s.vy = s.vy * (1 - VELOCITY_EMA_ALPHA) + (wy / dt) * VELOCITY_EMA_ALPHA;
+      motionState.vx = s.vx;
+      motionState.vy = s.vy;
       motionState.speed = Math.hypot(s.vx, s.vy);
       invalidate();
     };
@@ -98,13 +100,17 @@ export function useDragPan() {
     };
   }, [gl, camera, invalidate, s]);
 
-  useFrame((_, delta) => {
+  useFrame((_, rawDelta) => {
     if (s.down || !s.dragging) return;
+    // clamp the step so a stalled/backgrounded tab can't teleport the pan
+    const delta = Math.min(rawDelta, 0.05);
     const speed = Math.hypot(s.vx, s.vy);
     if (speed < SETTLE_EPSILON) {
       s.dragging = false;
       s.vx = 0;
       s.vy = 0;
+      motionState.vx = 0;
+      motionState.vy = 0;
       motionState.speed = 0;
       useBoardStore.getState().setDragging(false);
       return;
@@ -115,6 +121,8 @@ export function useDragPan() {
     const decay = Math.exp(-MOMENTUM_DAMPING * delta);
     s.vx *= decay;
     s.vy *= decay;
+    motionState.vx = s.vx;
+    motionState.vy = s.vy;
     motionState.speed = Math.hypot(s.vx, s.vy);
     invalidate();
   });
