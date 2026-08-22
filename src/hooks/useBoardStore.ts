@@ -8,7 +8,12 @@ import { create } from 'zustand';
  */
 export const motionState = { speed: 0, vx: 0, vy: 0 };
 
+/** The talent roster the canvas is currently showing. */
+export type TalentBoard = 'female' | 'male';
+
 interface BoardState {
+  /** Active talent board — each board is its own canvas with its own roster. */
+  board: TalentBoard;
   /** Camera-style pan over the board, in world units. The board group is
    *  positioned at [-panX, -panY, 0]. */
   panX: number;
@@ -25,6 +30,7 @@ interface BoardState {
   /** When set, Board eases the pan toward this point (e.g. centering a
    *  clicked tile). Cleared by dragging or on arrival. */
   panTarget: { x: number; y: number } | null;
+  setBoard: (board: TalentBoard) => void;
   setPan: (x: number, y: number) => void;
   setDragging: (dragging: boolean) => void;
   setActiveTile: (id: string | null) => void;
@@ -36,6 +42,7 @@ interface BoardState {
 const clamp = (v: number, limit: number) => Math.min(limit, Math.max(-limit, v));
 
 export const useBoardStore = create<BoardState>((set, get) => ({
+  board: 'female',
   panX: 0,
   panY: 0,
   isDragging: false,
@@ -43,6 +50,11 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   selectedId: null,
   bounds: { x: 0, y: 0 },
   panTarget: null,
+  setBoard: (board) => {
+    if (board === get().board) return;
+    // fresh canvas: recenter and drop any selection/promotion from the old one
+    set({ board, panX: 0, panY: 0, panTarget: null, selectedId: null, activeTileId: null });
+  },
   setPan: (x, y) => {
     const { bounds } = get();
     set({ panX: clamp(x, bounds.x), panY: clamp(y, bounds.y) });

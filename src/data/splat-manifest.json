@@ -1,649 +1,85 @@
 [
   {
-    "id": "amara-diallo",
-    "splatUrl": "/splats/amara-diallo.splat",
-    "thumbUrl": "/thumbs/amara-diallo.png",
-    "sizeBytes": 292160,
+    "id": "capture-luigi",
+    "splatUrl": "/splats/capture-luigi.splat",
+    "thumbUrl": "/thumbs/capture-luigi.png",
+    "sizeBytes": 464832,
     "meta": {
-      "id": "amara-diallo",
-      "name": "Amara Diallo",
-      "agency": "Nova Faces",
-      "city": "Dakar",
-      "heightCm": 182,
-      "weightKg": 61,
-      "bustCm": 85,
-      "waistCm": 63,
-      "hipsCm": 92,
-      "shoeEu": 41,
-      "hair": "Black",
-      "eyes": "Dark Brown",
-      "bio": "Amara walked forty-one shows across the big four fashion weeks in her breakout year.",
+      "id": "capture-luigi",
+      "source": "capture",
+      "name": "Luigi — Figurine Capture",
+      "agency": "Real Capture Test",
+      "city": "dylanebert/3dgs · Hugging Face",
+      "heightCm": 14,
+      "weightKg": 1,
+      "bustCm": 8,
+      "waistCm": 7,
+      "hipsCm": 8,
+      "shoeEu": 20,
+      "hair": "Brown (painted)",
+      "eyes": "Blue (painted)",
+      "bio": "A real 3D Gaussian splat capture of a Luigi figurine, converted from the 3DGS .ply in the dylanebert/3dgs dataset. On the board as a rendering test model until real human captures are trained.",
       "look": {
-        "skin": "#5c3722",
-        "hair": "#0d0a08",
-        "outfit": "#d4a017",
-        "style": "dress"
-      }
-    }
-  },
-  {
-    "id": "andre-santos",
-    "splatUrl": "/splats/andre-santos.splat",
-    "thumbUrl": "/thumbs/andre-santos.png",
-    "sizeBytes": 240960,
-    "meta": {
-      "id": "andre-santos",
-      "name": "André Santos",
-      "agency": "Nova Faces",
-      "city": "São Paulo",
-      "heightCm": 185,
-      "weightKg": 74,
-      "bustCm": 98,
-      "waistCm": 78,
-      "hipsCm": 94,
-      "shoeEu": 43,
-      "hair": "Black",
-      "eyes": "Brown",
-      "bio": "André's street-cast discovery story made him the face of a major sportswear collaboration.",
-      "look": {
-        "skin": "#9c6b45",
-        "hair": "#131010",
-        "outfit": "#f2f2ef",
+        "skin": "#f0c8a0",
+        "hair": "#5a3a20",
+        "outfit": "#2e7d32",
         "style": "casual"
       }
     }
   },
   {
-    "id": "aria-linden",
-    "splatUrl": "/splats/aria-linden.splat",
-    "thumbUrl": "/thumbs/aria-linden.png",
-    "sizeBytes": 314560,
+    "id": "capture-nike",
+    "splatUrl": "/splats/capture-nike.splat",
+    "thumbUrl": "/thumbs/capture-nike.png",
+    "sizeBytes": 7558208,
     "meta": {
-      "id": "aria-linden",
-      "name": "Aria Linden",
-      "agency": "Vantage Models",
-      "city": "Copenhagen",
-      "heightCm": 178,
-      "weightKg": 57,
-      "bustCm": 82,
-      "waistCm": 61,
-      "hipsCm": 89,
-      "shoeEu": 40,
-      "hair": "Platinum Blonde",
-      "eyes": "Blue",
-      "bio": "Known for her glacial runway walk, Aria opened three shows at Copenhagen Fashion Week last season.",
-      "look": {
-        "skin": "#e8c4a2",
-        "hair": "#e8dfc8",
-        "outfit": "#1a1a1a",
-        "style": "dress"
-      }
-    }
-  },
-  {
-    "id": "camila-ortiz",
-    "splatUrl": "/splats/camila-ortiz.splat",
-    "thumbUrl": "/thumbs/camila-ortiz.png",
-    "sizeBytes": 314560,
-    "meta": {
-      "id": "camila-ortiz",
-      "name": "Camila Ortiz",
-      "agency": "Vantage Models",
-      "city": "Buenos Aires",
-      "heightCm": 176,
-      "weightKg": 56,
-      "bustCm": 82,
-      "waistCm": 61,
-      "hipsCm": 89,
-      "shoeEu": 39,
-      "hair": "Auburn",
-      "eyes": "Hazel",
-      "bio": "A former tango dancer, Camila is booked for any collection that needs movement on the runway.",
-      "look": {
-        "skin": "#dfb18a",
-        "hair": "#7a3b1e",
-        "outfit": "#e8b4c8",
-        "style": "dress"
-      }
-    }
-  },
-  {
-    "id": "dmitri-pavlov",
-    "splatUrl": "/splats/dmitri-pavlov.splat",
-    "thumbUrl": "/thumbs/dmitri-pavlov.png",
-    "sizeBytes": 240960,
-    "meta": {
-      "id": "dmitri-pavlov",
-      "name": "Dmitri Pavlov",
-      "agency": "Meridian Mgmt",
-      "city": "Prague",
-      "heightCm": 191,
-      "weightKg": 80,
-      "bustCm": 102,
-      "waistCm": 81,
-      "hipsCm": 97,
-      "shoeEu": 46,
-      "hair": "Dark Brown",
-      "eyes": "Grey",
-      "bio": "Dmitri's severe bone structure keeps him a fixture of monochrome, hard-edged editorial work.",
-      "look": {
-        "skin": "#e2bd9d",
-        "hair": "#241a12",
-        "outfit": "#101014",
-        "style": "suit"
-      }
-    }
-  },
-  {
-    "id": "elias-brandt",
-    "splatUrl": "/splats/elias-brandt.splat",
-    "thumbUrl": "/thumbs/elias-brandt.png",
-    "sizeBytes": 240960,
-    "meta": {
-      "id": "elias-brandt",
-      "name": "Elias Brandt",
-      "agency": "Atelier Paris",
-      "city": "Vienna",
-      "heightCm": 187,
-      "weightKg": 75,
-      "bustCm": 98,
-      "waistCm": 78,
-      "hipsCm": 94,
+      "id": "capture-nike",
+      "source": "capture",
+      "name": "Nike Trainer — Object Capture",
+      "agency": "Real Capture Test",
+      "city": "cakewalk/splat-data · Hugging Face",
+      "heightCm": 18,
+      "weightKg": 1,
+      "bustCm": 12,
+      "waistCm": 10,
+      "hipsCm": 12,
       "shoeEu": 44,
-      "hair": "Dark Blond",
-      "eyes": "Green",
-      "bio": "Elias moonlights as a concert violinist and models for heritage European tailoring brands.",
+      "hair": "N/A",
+      "eyes": "N/A",
+      "bio": "A real 3D Gaussian splat capture of a Nike trainer from the antimatter15 splat demo set, downsampled to the board's 8 MB budget. On the board as a rendering test model until real human captures are trained.",
       "look": {
-        "skin": "#e4bd97",
-        "hair": "#8a6b3f",
-        "outfit": "#26221e",
-        "style": "suit"
-      }
-    }
-  },
-  {
-    "id": "freja-holm",
-    "splatUrl": "/splats/freja-holm.splat",
-    "thumbUrl": "/thumbs/freja-holm.png",
-    "sizeBytes": 263360,
-    "meta": {
-      "id": "freja-holm",
-      "name": "Freja Holm",
-      "agency": "Vantage Models",
-      "city": "Stockholm",
-      "heightCm": 179,
-      "weightKg": 58,
-      "bustCm": 83,
-      "waistCm": 61,
-      "hipsCm": 90,
-      "shoeEu": 40,
-      "hair": "Ice Blonde",
-      "eyes": "Pale Blue",
-      "bio": "Freja's minimalist Scandinavian aesthetic made her the muse of a leading knitwear label.",
-      "look": {
-        "skin": "#f0d6bd",
-        "hair": "#ece4d2",
-        "outfit": "#9aa7b0",
+        "skin": "#d8d8d8",
+        "hair": "#333333",
+        "outfit": "#c8442c",
         "style": "casual"
       }
     }
   },
   {
-    "id": "ines-moreau",
-    "splatUrl": "/splats/ines-moreau.splat",
-    "thumbUrl": "/thumbs/ines-moreau.png",
-    "sizeBytes": 314560,
+    "id": "capture-plush",
+    "splatUrl": "/splats/capture-plush.splat",
+    "thumbUrl": "/thumbs/capture-plush.png",
+    "sizeBytes": 7864320,
     "meta": {
-      "id": "ines-moreau",
-      "name": "Inès Moreau",
-      "agency": "Atelier Paris",
-      "city": "Paris",
-      "heightCm": 176,
-      "weightKg": 55,
-      "bustCm": 80,
-      "waistCm": 60,
-      "hipsCm": 88,
-      "shoeEu": 39,
-      "hair": "Chestnut",
-      "eyes": "Green",
-      "bio": "A couture-week fixture, Inès is famous for carrying the closing look at haute couture shows.",
+      "id": "capture-plush",
+      "source": "capture",
+      "name": "Plush Bear — Object Capture",
+      "agency": "Real Capture Test",
+      "city": "cakewalk/splat-data · Hugging Face",
+      "heightCm": 35,
+      "weightKg": 1,
+      "bustCm": 30,
+      "waistCm": 28,
+      "hipsCm": 30,
+      "shoeEu": 18,
+      "hair": "Fur",
+      "eyes": "Black",
+      "bio": "A real 3D Gaussian splat capture of a plush bear from the antimatter15 splat demo set, downsampled to the board's 8 MB budget. On the board as a rendering test model until real human captures are trained.",
       "look": {
-        "skin": "#e6bd9c",
-        "hair": "#5a3a22",
-        "outfit": "#7a1f2b",
-        "style": "dress"
-      }
-    }
-  },
-  {
-    "id": "jonas-weber",
-    "splatUrl": "/splats/jonas-weber.splat",
-    "thumbUrl": "/thumbs/jonas-weber.png",
-    "sizeBytes": 240960,
-    "meta": {
-      "id": "jonas-weber",
-      "name": "Jonas Weber",
-      "agency": "Meridian Mgmt",
-      "city": "Hamburg",
-      "heightCm": 188,
-      "weightKg": 78,
-      "bustCm": 100,
-      "waistCm": 80,
-      "hipsCm": 96,
-      "shoeEu": 45,
-      "hair": "Brown",
-      "eyes": "Blue",
-      "bio": "Jonas is the long-running face of a German outerwear label's autumn campaigns.",
-      "look": {
-        "skin": "#e7c5a0",
-        "hair": "#4a3324",
-        "outfit": "#7d4a2b",
+        "skin": "#c9a06a",
+        "hair": "#8a6a3a",
+        "outfit": "#c9a06a",
         "style": "casual"
-      }
-    }
-  },
-  {
-    "id": "kenji-mori",
-    "splatUrl": "/splats/kenji-mori.splat",
-    "thumbUrl": "/thumbs/kenji-mori.png",
-    "sizeBytes": 240960,
-    "meta": {
-      "id": "kenji-mori",
-      "name": "Kenji Mori",
-      "agency": "Meridian Mgmt",
-      "city": "Tokyo",
-      "heightCm": 188,
-      "weightKg": 74,
-      "bustCm": 98,
-      "waistCm": 78,
-      "hipsCm": 94,
-      "shoeEu": 44,
-      "hair": "Black",
-      "eyes": "Dark Brown",
-      "bio": "A favorite of avant-garde tailoring houses, Kenji splits his seasons between Tokyo and Paris.",
-      "look": {
-        "skin": "#d9a97e",
-        "hair": "#17141a",
-        "outfit": "#2b3a4f",
-        "style": "suit"
-      }
-    }
-  },
-  {
-    "id": "leilani-kahale",
-    "splatUrl": "/splats/leilani-kahale.splat",
-    "thumbUrl": "/thumbs/leilani-kahale.png",
-    "sizeBytes": 314560,
-    "meta": {
-      "id": "leilani-kahale",
-      "name": "Leilani Kahale",
-      "agency": "Nova Faces",
-      "city": "Honolulu",
-      "heightCm": 178,
-      "weightKg": 59,
-      "bustCm": 84,
-      "waistCm": 62,
-      "hipsCm": 90,
-      "shoeEu": 40,
-      "hair": "Dark Brown",
-      "eyes": "Brown",
-      "bio": "Leilani's swim and resort-wear work transitioned into ready-to-wear runways in Milan and New York.",
-      "look": {
-        "skin": "#c48d5e",
-        "hair": "#2e1d12",
-        "outfit": "#0e7a6e",
-        "style": "dress"
-      }
-    }
-  },
-  {
-    "id": "luca-bianchi",
-    "splatUrl": "/splats/luca-bianchi.splat",
-    "thumbUrl": "/thumbs/luca-bianchi.png",
-    "sizeBytes": 240960,
-    "meta": {
-      "id": "luca-bianchi",
-      "name": "Luca Bianchi",
-      "agency": "Atelier Paris",
-      "city": "Milan",
-      "heightCm": 185,
-      "weightKg": 75,
-      "bustCm": 98,
-      "waistCm": 77,
-      "hipsCm": 94,
-      "shoeEu": 43,
-      "hair": "Brown",
-      "eyes": "Brown",
-      "bio": "Third-generation Milanese tailor turned model, Luca is a mainstay of classic Italian houses.",
-      "look": {
-        "skin": "#dcae85",
-        "hair": "#3b2a1a",
-        "outfit": "#1f3d2b",
-        "style": "suit"
-      }
-    }
-  },
-  {
-    "id": "mateo-reyes",
-    "splatUrl": "/splats/mateo-reyes.splat",
-    "thumbUrl": "/thumbs/mateo-reyes.png",
-    "sizeBytes": 263360,
-    "meta": {
-      "id": "mateo-reyes",
-      "name": "Mateo Reyes",
-      "agency": "Vantage Models",
-      "city": "Mexico City",
-      "heightCm": 186,
-      "weightKg": 76,
-      "bustCm": 99,
-      "waistCm": 80,
-      "hipsCm": 95,
-      "shoeEu": 43,
-      "hair": "Dark Brown",
-      "eyes": "Hazel",
-      "bio": "Mateo went from architecture school to exclusive runway contracts in a single season.",
-      "look": {
-        "skin": "#c9955f",
-        "hair": "#2a1c12",
-        "outfit": "#e0dcd3",
-        "style": "casual"
-      }
-    }
-  },
-  {
-    "id": "mei-chen",
-    "splatUrl": "/splats/mei-chen.splat",
-    "thumbUrl": "/thumbs/mei-chen.png",
-    "sizeBytes": 314560,
-    "meta": {
-      "id": "mei-chen",
-      "name": "Mei Chen",
-      "agency": "Vantage Models",
-      "city": "Shanghai",
-      "heightCm": 179,
-      "weightKg": 57,
-      "bustCm": 82,
-      "waistCm": 60,
-      "hipsCm": 88,
-      "shoeEu": 39,
-      "hair": "Black",
-      "eyes": "Dark Brown",
-      "bio": "Mei opened Shanghai Fashion Week twice and fronts a global cosmetics line.",
-      "look": {
-        "skin": "#eccfa9",
-        "hair": "#0e0c10",
-        "outfit": "#264d73",
-        "style": "dress"
-      }
-    }
-  },
-  {
-    "id": "nikolai-fedorov",
-    "splatUrl": "/splats/nikolai-fedorov.splat",
-    "thumbUrl": "/thumbs/nikolai-fedorov.png",
-    "sizeBytes": 240960,
-    "meta": {
-      "id": "nikolai-fedorov",
-      "name": "Nikolai Fedorov",
-      "agency": "Meridian Mgmt",
-      "city": "Riga",
-      "heightCm": 190,
-      "weightKg": 79,
-      "bustCm": 101,
-      "waistCm": 80,
-      "hipsCm": 96,
-      "shoeEu": 45,
-      "hair": "Platinum",
-      "eyes": "Ice Blue",
-      "bio": "Nikolai's near-white hair and towering frame close out conceptual shows across Europe.",
-      "look": {
-        "skin": "#eed3b8",
-        "hair": "#e6e2da",
-        "outfit": "#494f45",
-        "style": "suit"
-      }
-    }
-  },
-  {
-    "id": "noor-haddad",
-    "splatUrl": "/splats/noor-haddad.splat",
-    "thumbUrl": "/thumbs/noor-haddad.png",
-    "sizeBytes": 314560,
-    "meta": {
-      "id": "noor-haddad",
-      "name": "Noor Haddad",
-      "agency": "Nova Faces",
-      "city": "Beirut",
-      "heightCm": 177,
-      "weightKg": 56,
-      "bustCm": 81,
-      "waistCm": 60,
-      "hipsCm": 88,
-      "shoeEu": 39,
-      "hair": "Dark Brown",
-      "eyes": "Amber",
-      "bio": "Noor's runway debut closed a couture show and landed her on four international magazine covers.",
-      "look": {
-        "skin": "#d8ab7f",
-        "hair": "#241610",
-        "outfit": "#4b2a6f",
-        "style": "dress"
-      }
-    }
-  },
-  {
-    "id": "owen-gallagher",
-    "splatUrl": "/splats/owen-gallagher.splat",
-    "thumbUrl": "/thumbs/owen-gallagher.png",
-    "sizeBytes": 263360,
-    "meta": {
-      "id": "owen-gallagher",
-      "name": "Owen Gallagher",
-      "agency": "Atelier Paris",
-      "city": "Dublin",
-      "heightCm": 186,
-      "weightKg": 77,
-      "bustCm": 99,
-      "waistCm": 79,
-      "hipsCm": 95,
-      "shoeEu": 44,
-      "hair": "Copper Red",
-      "eyes": "Green",
-      "bio": "Owen's copper hair and freckled complexion anchor knitwear and heritage tweed campaigns.",
-      "look": {
-        "skin": "#f0d2b2",
-        "hair": "#a4502a",
-        "outfit": "#6b6a52",
-        "style": "casual"
-      }
-    }
-  },
-  {
-    "id": "priya-nair",
-    "splatUrl": "/splats/priya-nair.splat",
-    "thumbUrl": "/thumbs/priya-nair.png",
-    "sizeBytes": 292160,
-    "meta": {
-      "id": "priya-nair",
-      "name": "Priya Nair",
-      "agency": "Nova Faces",
-      "city": "Kochi",
-      "heightCm": 177,
-      "weightKg": 57,
-      "bustCm": 82,
-      "waistCm": 61,
-      "hipsCm": 89,
-      "shoeEu": 39,
-      "hair": "Black",
-      "eyes": "Dark Brown",
-      "bio": "Priya balances a physics doctorate with runway seasons, walking exclusively for two houses a year.",
-      "look": {
-        "skin": "#a86f42",
-        "hair": "#120e0c",
-        "outfit": "#e5c848",
-        "style": "dress"
-      }
-    }
-  },
-  {
-    "id": "ravi-kapoor",
-    "splatUrl": "/splats/ravi-kapoor.splat",
-    "thumbUrl": "/thumbs/ravi-kapoor.png",
-    "sizeBytes": 240960,
-    "meta": {
-      "id": "ravi-kapoor",
-      "name": "Ravi Kapoor",
-      "agency": "Meridian Mgmt",
-      "city": "Mumbai",
-      "heightCm": 184,
-      "weightKg": 73,
-      "bustCm": 97,
-      "waistCm": 77,
-      "hipsCm": 93,
-      "shoeEu": 43,
-      "hair": "Black",
-      "eyes": "Dark Brown",
-      "bio": "Ravi headlined Lakmé Fashion Week before signing exclusively with a Parisian couture house.",
-      "look": {
-        "skin": "#b07a4d",
-        "hair": "#141014",
-        "outfit": "#efe6d8",
-        "style": "suit"
-      }
-    }
-  },
-  {
-    "id": "sasha-volkov",
-    "splatUrl": "/splats/sasha-volkov.splat",
-    "thumbUrl": "/thumbs/sasha-volkov.png",
-    "sizeBytes": 240960,
-    "meta": {
-      "id": "sasha-volkov",
-      "name": "Sasha Volkov",
-      "agency": "Meridian Mgmt",
-      "city": "Berlin",
-      "heightCm": 190,
-      "weightKg": 78,
-      "bustCm": 100,
-      "waistCm": 79,
-      "hipsCm": 96,
-      "shoeEu": 45,
-      "hair": "Ash Blond",
-      "eyes": "Grey",
-      "bio": "Sasha's androgynous look keeps him in demand for both menswear and womenswear presentations.",
-      "look": {
-        "skin": "#ecd0b4",
-        "hair": "#c9bfa4",
-        "outfit": "#3d3d3d",
-        "style": "suit"
-      }
-    }
-  },
-  {
-    "id": "sofia-rossi",
-    "splatUrl": "/splats/sofia-rossi.splat",
-    "thumbUrl": "/thumbs/sofia-rossi.png",
-    "sizeBytes": 314560,
-    "meta": {
-      "id": "sofia-rossi",
-      "name": "Sofia Rossi",
-      "agency": "Atelier Paris",
-      "city": "Rome",
-      "heightCm": 177,
-      "weightKg": 56,
-      "bustCm": 81,
-      "waistCm": 60,
-      "hipsCm": 88,
-      "shoeEu": 39,
-      "hair": "Dark Brown",
-      "eyes": "Brown",
-      "bio": "Sofia's classical profile keeps her in demand for jewelry and eveningwear campaigns.",
-      "look": {
-        "skin": "#e3b78f",
-        "hair": "#33241a",
-        "outfit": "#8f7bb5",
-        "style": "dress"
-      }
-    }
-  },
-  {
-    "id": "tomas-eriksen",
-    "splatUrl": "/splats/tomas-eriksen.splat",
-    "thumbUrl": "/thumbs/tomas-eriksen.png",
-    "sizeBytes": 240960,
-    "meta": {
-      "id": "tomas-eriksen",
-      "name": "Tomas Eriksen",
-      "agency": "Vantage Models",
-      "city": "Oslo",
-      "heightCm": 189,
-      "weightKg": 79,
-      "bustCm": 101,
-      "waistCm": 80,
-      "hipsCm": 96,
-      "shoeEu": 45,
-      "hair": "Blond",
-      "eyes": "Blue",
-      "bio": "A former alpine skier, Tomas brings an athletic frame to technical outerwear campaigns.",
-      "look": {
-        "skin": "#e9cbaa",
-        "hair": "#d9c48e",
-        "outfit": "#37536e",
-        "style": "casual"
-      }
-    }
-  },
-  {
-    "id": "yuki-tanaka",
-    "splatUrl": "/splats/yuki-tanaka.splat",
-    "thumbUrl": "/thumbs/yuki-tanaka.png",
-    "sizeBytes": 314560,
-    "meta": {
-      "id": "yuki-tanaka",
-      "name": "Yuki Tanaka",
-      "agency": "Meridian Mgmt",
-      "city": "Osaka",
-      "heightCm": 175,
-      "weightKg": 53,
-      "bustCm": 79,
-      "waistCm": 59,
-      "hipsCm": 86,
-      "shoeEu": 38,
-      "hair": "Jet Black",
-      "eyes": "Dark Brown",
-      "bio": "Yuki's precise, geometric walk is a signature booking for structural and sculptural collections.",
-      "look": {
-        "skin": "#efd3b3",
-        "hair": "#0b0a0e",
-        "outfit": "#c2452f",
-        "style": "dress"
-      }
-    }
-  },
-  {
-    "id": "zola-abara",
-    "splatUrl": "/splats/zola-abara.splat",
-    "thumbUrl": "/thumbs/zola-abara.png",
-    "sizeBytes": 292160,
-    "meta": {
-      "id": "zola-abara",
-      "name": "Zola Abara",
-      "agency": "Nova Faces",
-      "city": "Lagos",
-      "heightCm": 180,
-      "weightKg": 60,
-      "bustCm": 84,
-      "waistCm": 62,
-      "hipsCm": 91,
-      "shoeEu": 41,
-      "hair": "Black",
-      "eyes": "Brown",
-      "bio": "Zola's editorial range made her the face of two major fragrance campaigns this year.",
-      "look": {
-        "skin": "#6b4028",
-        "hair": "#100c0a",
-        "outfit": "#b8352e",
-        "style": "dress"
       }
     }
   }

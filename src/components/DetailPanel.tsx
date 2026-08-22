@@ -45,22 +45,19 @@ export default function DetailPanel() {
       <style>{`
         .detail-panel {
           position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
+          top: 76px;
+          right: 16px;
+          bottom: 16px;
           z-index: 10;
           width: 360px;
-          max-width: 90vw;
+          max-width: calc(100vw - 32px);
           box-sizing: border-box;
-          background: rgba(255, 255, 255, 0.96);
-          backdrop-filter: blur(8px);
-          border-left: 1px solid #ececec;
-          box-shadow: -12px 0 32px rgba(0, 0, 0, 0.06);
+          border-radius: 28px;
           padding: 28px;
           overflow-y: auto;
-          transform: translateX(105%);
+          transform: translateX(calc(100% + 32px));
           transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-          color: #171717;
+          color: var(--ink, #171717);
         }
         .detail-panel.open { transform: translateX(0); }
         .detail-panel .close {
@@ -71,13 +68,14 @@ export default function DetailPanel() {
           height: 32px;
           border: none;
           border-radius: 50%;
-          background: #f2f2f2;
+          background: rgba(255, 255, 255, 0.7);
+          box-shadow: 0 2px 8px rgba(80, 90, 140, 0.15), inset 0 1px 0 rgba(255, 255, 255, 1);
           color: #555;
           font-size: 16px;
           line-height: 1;
           cursor: pointer;
         }
-        .detail-panel .close:hover { background: #e4e4e4; }
+        .detail-panel .close:hover { background: rgba(255, 255, 255, 0.95); }
         .detail-panel h2 {
           margin: 4px 0 2px;
           font-size: 26px;
@@ -110,8 +108,8 @@ export default function DetailPanel() {
           gap: 14px 18px;
           margin: 0 0 22px;
           padding: 18px 0;
-          border-top: 1px solid #ededed;
-          border-bottom: 1px solid #ededed;
+          border-top: 1px solid rgba(255, 255, 255, 0.8);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.8);
         }
         .detail-panel dt {
           font-size: 11px;
@@ -125,19 +123,19 @@ export default function DetailPanel() {
         @media (max-width: 768px) {
           .detail-panel {
             top: auto;
-            left: 0;
-            width: 100%;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            width: auto;
             max-width: none;
             max-height: 55%;
-            border-left: none;
-            border-top: 1px solid #ececec;
-            border-radius: 16px 16px 0 0;
-            transform: translateY(105%);
+            border-radius: 24px;
+            transform: translateY(calc(100% + 24px));
           }
           .detail-panel.open { transform: translateY(0); }
         }
       `}</style>
-      <aside className={`detail-panel${meta ? ' open' : ''}`} aria-hidden={!meta}>
+      <aside className={`detail-panel glass${meta ? ' open' : ''}`} aria-hidden={!meta}>
         {shown && (
           <>
             <button className="close" onClick={close} aria-label="Close details">

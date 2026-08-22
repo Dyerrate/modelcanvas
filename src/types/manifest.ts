@@ -7,6 +7,12 @@ export interface ModelLook {
 
 export interface ModelMeta {
   id: string;
+  /** 'capture' entries are real imported splats (import-real-splats.mjs);
+   *  absent/'placeholder' entries are synthetic (generate-placeholder-splats.mjs). */
+  source?: 'capture' | 'placeholder';
+  /** Which talent board the model belongs to; untagged models (e.g. the
+   *  object-capture test models) appear on every board. */
+  gender?: 'female' | 'male';
   name: string;
   agency: string;
   city: string;

@@ -13,7 +13,12 @@
     "hair": "Platinum Blonde",
     "eyes": "Blue",
     "bio": "Known for her glacial runway walk, Aria opened three shows at Copenhagen Fashion Week last season.",
-    "look": { "skin": "#e8c4a2", "hair": "#e8dfc8", "outfit": "#1a1a1a", "style": "dress" }
+    "look": {
+      "skin": "#e8c4a2",
+      "hair": "#e8dfc8",
+      "outfit": "#1a1a1a",
+      "style": "dress"
+    }
   },
   {
     "id": "kenji-mori",
@@ -29,7 +34,12 @@
     "hair": "Black",
     "eyes": "Dark Brown",
     "bio": "A favorite of avant-garde tailoring houses, Kenji splits his seasons between Tokyo and Paris.",
-    "look": { "skin": "#d9a97e", "hair": "#17141a", "outfit": "#2b3a4f", "style": "suit" }
+    "look": {
+      "skin": "#d9a97e",
+      "hair": "#17141a",
+      "outfit": "#2b3a4f",
+      "style": "suit"
+    }
   },
   {
     "id": "zola-abara",
@@ -45,7 +55,12 @@
     "hair": "Black",
     "eyes": "Brown",
     "bio": "Zola's editorial range made her the face of two major fragrance campaigns this year.",
-    "look": { "skin": "#6b4028", "hair": "#100c0a", "outfit": "#b8352e", "style": "dress" }
+    "look": {
+      "skin": "#6b4028",
+      "hair": "#100c0a",
+      "outfit": "#b8352e",
+      "style": "dress"
+    }
   },
   {
     "id": "mateo-reyes",
@@ -61,7 +76,12 @@
     "hair": "Dark Brown",
     "eyes": "Hazel",
     "bio": "Mateo went from architecture school to exclusive runway contracts in a single season.",
-    "look": { "skin": "#c9955f", "hair": "#2a1c12", "outfit": "#e0dcd3", "style": "casual" }
+    "look": {
+      "skin": "#c9955f",
+      "hair": "#2a1c12",
+      "outfit": "#e0dcd3",
+      "style": "casual"
+    }
   },
   {
     "id": "ines-moreau",
@@ -77,7 +97,12 @@
     "hair": "Chestnut",
     "eyes": "Green",
     "bio": "A couture-week fixture, Inès is famous for carrying the closing look at haute couture shows.",
-    "look": { "skin": "#e6bd9c", "hair": "#5a3a22", "outfit": "#7a1f2b", "style": "dress" }
+    "look": {
+      "skin": "#e6bd9c",
+      "hair": "#5a3a22",
+      "outfit": "#7a1f2b",
+      "style": "dress"
+    }
   },
   {
     "id": "sasha-volkov",
@@ -93,7 +118,12 @@
     "hair": "Ash Blond",
     "eyes": "Grey",
     "bio": "Sasha's androgynous look keeps him in demand for both menswear and womenswear presentations.",
-    "look": { "skin": "#ecd0b4", "hair": "#c9bfa4", "outfit": "#3d3d3d", "style": "suit" }
+    "look": {
+      "skin": "#ecd0b4",
+      "hair": "#c9bfa4",
+      "outfit": "#3d3d3d",
+      "style": "suit"
+    }
   },
   {
     "id": "amara-diallo",
@@ -109,7 +139,12 @@
     "hair": "Black",
     "eyes": "Dark Brown",
     "bio": "Amara walked forty-one shows across the big four fashion weeks in her breakout year.",
-    "look": { "skin": "#5c3722", "hair": "#0d0a08", "outfit": "#d4a017", "style": "dress" }
+    "look": {
+      "skin": "#5c3722",
+      "hair": "#0d0a08",
+      "outfit": "#d4a017",
+      "style": "dress"
+    }
   },
   {
     "id": "luca-bianchi",
@@ -125,7 +160,12 @@
     "hair": "Brown",
     "eyes": "Brown",
     "bio": "Third-generation Milanese tailor turned model, Luca is a mainstay of classic Italian houses.",
-    "look": { "skin": "#dcae85", "hair": "#3b2a1a", "outfit": "#1f3d2b", "style": "suit" }
+    "look": {
+      "skin": "#dcae85",
+      "hair": "#3b2a1a",
+      "outfit": "#1f3d2b",
+      "style": "suit"
+    }
   },
   {
     "id": "freja-holm",
@@ -141,7 +181,12 @@
     "hair": "Ice Blonde",
     "eyes": "Pale Blue",
     "bio": "Freja's minimalist Scandinavian aesthetic made her the muse of a leading knitwear label.",
-    "look": { "skin": "#f0d6bd", "hair": "#ece4d2", "outfit": "#9aa7b0", "style": "casual" }
+    "look": {
+      "skin": "#f0d6bd",
+      "hair": "#ece4d2",
+      "outfit": "#9aa7b0",
+      "style": "casual"
+    }
   },
   {
     "id": "ravi-kapoor",
@@ -157,7 +202,12 @@
     "hair": "Black",
     "eyes": "Dark Brown",
     "bio": "Ravi headlined Lakmé Fashion Week before signing exclusively with a Parisian couture house.",
-    "look": { "skin": "#b07a4d", "hair": "#141014", "outfit": "#efe6d8", "style": "suit" }
+    "look": {
+      "skin": "#b07a4d",
+      "hair": "#141014",
+      "outfit": "#efe6d8",
+      "style": "suit"
+    }
   },
   {
     "id": "noor-haddad",
@@ -173,7 +223,12 @@
     "hair": "Dark Brown",
     "eyes": "Amber",
     "bio": "Noor's runway debut closed a couture show and landed her on four international magazine covers.",
-    "look": { "skin": "#d8ab7f", "hair": "#241610", "outfit": "#4b2a6f", "style": "dress" }
+    "look": {
+      "skin": "#d8ab7f",
+      "hair": "#241610",
+      "outfit": "#4b2a6f",
+      "style": "dress"
+    }
   },
   {
     "id": "tomas-eriksen",
@@ -189,7 +244,12 @@
     "hair": "Blond",
     "eyes": "Blue",
     "bio": "A former alpine skier, Tomas brings an athletic frame to technical outerwear campaigns.",
-    "look": { "skin": "#e9cbaa", "hair": "#d9c48e", "outfit": "#37536e", "style": "casual" }
+    "look": {
+      "skin": "#e9cbaa",
+      "hair": "#d9c48e",
+      "outfit": "#37536e",
+      "style": "casual"
+    }
   },
   {
     "id": "yuki-tanaka",
@@ -205,7 +265,12 @@
     "hair": "Jet Black",
     "eyes": "Dark Brown",
     "bio": "Yuki's precise, geometric walk is a signature booking for structural and sculptural collections.",
-    "look": { "skin": "#efd3b3", "hair": "#0b0a0e", "outfit": "#c2452f", "style": "dress" }
+    "look": {
+      "skin": "#efd3b3",
+      "hair": "#0b0a0e",
+      "outfit": "#c2452f",
+      "style": "dress"
+    }
   },
   {
     "id": "elias-brandt",
@@ -221,7 +286,12 @@
     "hair": "Dark Blond",
     "eyes": "Green",
     "bio": "Elias moonlights as a concert violinist and models for heritage European tailoring brands.",
-    "look": { "skin": "#e4bd97", "hair": "#8a6b3f", "outfit": "#26221e", "style": "suit" }
+    "look": {
+      "skin": "#e4bd97",
+      "hair": "#8a6b3f",
+      "outfit": "#26221e",
+      "style": "suit"
+    }
   },
   {
     "id": "leilani-kahale",
@@ -237,7 +307,12 @@
     "hair": "Dark Brown",
     "eyes": "Brown",
     "bio": "Leilani's swim and resort-wear work transitioned into ready-to-wear runways in Milan and New York.",
-    "look": { "skin": "#c48d5e", "hair": "#2e1d12", "outfit": "#0e7a6e", "style": "dress" }
+    "look": {
+      "skin": "#c48d5e",
+      "hair": "#2e1d12",
+      "outfit": "#0e7a6e",
+      "style": "dress"
+    }
   },
   {
     "id": "dmitri-pavlov",
@@ -253,7 +328,12 @@
     "hair": "Dark Brown",
     "eyes": "Grey",
     "bio": "Dmitri's severe bone structure keeps him a fixture of monochrome, hard-edged editorial work.",
-    "look": { "skin": "#e2bd9d", "hair": "#241a12", "outfit": "#101014", "style": "suit" }
+    "look": {
+      "skin": "#e2bd9d",
+      "hair": "#241a12",
+      "outfit": "#101014",
+      "style": "suit"
+    }
   },
   {
     "id": "camila-ortiz",
@@ -269,7 +349,12 @@
     "hair": "Auburn",
     "eyes": "Hazel",
     "bio": "A former tango dancer, Camila is booked for any collection that needs movement on the runway.",
-    "look": { "skin": "#dfb18a", "hair": "#7a3b1e", "outfit": "#e8b4c8", "style": "dress" }
+    "look": {
+      "skin": "#dfb18a",
+      "hair": "#7a3b1e",
+      "outfit": "#e8b4c8",
+      "style": "dress"
+    }
   },
   {
     "id": "owen-gallagher",
@@ -285,7 +370,12 @@
     "hair": "Copper Red",
     "eyes": "Green",
     "bio": "Owen's copper hair and freckled complexion anchor knitwear and heritage tweed campaigns.",
-    "look": { "skin": "#f0d2b2", "hair": "#a4502a", "outfit": "#6b6a52", "style": "casual" }
+    "look": {
+      "skin": "#f0d2b2",
+      "hair": "#a4502a",
+      "outfit": "#6b6a52",
+      "style": "casual"
+    }
   },
   {
     "id": "priya-nair",
@@ -301,7 +391,12 @@
     "hair": "Black",
     "eyes": "Dark Brown",
     "bio": "Priya balances a physics doctorate with runway seasons, walking exclusively for two houses a year.",
-    "look": { "skin": "#a86f42", "hair": "#120e0c", "outfit": "#e5c848", "style": "dress" }
+    "look": {
+      "skin": "#a86f42",
+      "hair": "#120e0c",
+      "outfit": "#e5c848",
+      "style": "dress"
+    }
   },
   {
     "id": "jonas-weber",
@@ -317,7 +412,12 @@
     "hair": "Brown",
     "eyes": "Blue",
     "bio": "Jonas is the long-running face of a German outerwear label's autumn campaigns.",
-    "look": { "skin": "#e7c5a0", "hair": "#4a3324", "outfit": "#7d4a2b", "style": "casual" }
+    "look": {
+      "skin": "#e7c5a0",
+      "hair": "#4a3324",
+      "outfit": "#7d4a2b",
+      "style": "casual"
+    }
   },
   {
     "id": "mei-chen",
@@ -333,7 +433,12 @@
     "hair": "Black",
     "eyes": "Dark Brown",
     "bio": "Mei opened Shanghai Fashion Week twice and fronts a global cosmetics line.",
-    "look": { "skin": "#eccfa9", "hair": "#0e0c10", "outfit": "#264d73", "style": "dress" }
+    "look": {
+      "skin": "#eccfa9",
+      "hair": "#0e0c10",
+      "outfit": "#264d73",
+      "style": "dress"
+    }
   },
   {
     "id": "andre-santos",
@@ -349,7 +454,12 @@
     "hair": "Black",
     "eyes": "Brown",
     "bio": "André's street-cast discovery story made him the face of a major sportswear collaboration.",
-    "look": { "skin": "#9c6b45", "hair": "#131010", "outfit": "#f2f2ef", "style": "casual" }
+    "look": {
+      "skin": "#9c6b45",
+      "hair": "#131010",
+      "outfit": "#f2f2ef",
+      "style": "casual"
+    }
   },
   {
     "id": "sofia-rossi",
@@ -365,7 +475,12 @@
     "hair": "Dark Brown",
     "eyes": "Brown",
     "bio": "Sofia's classical profile keeps her in demand for jewelry and eveningwear campaigns.",
-    "look": { "skin": "#e3b78f", "hair": "#33241a", "outfit": "#8f7bb5", "style": "dress" }
+    "look": {
+      "skin": "#e3b78f",
+      "hair": "#33241a",
+      "outfit": "#8f7bb5",
+      "style": "dress"
+    }
   },
   {
     "id": "nikolai-fedorov",
@@ -381,6 +496,77 @@
     "hair": "Platinum",
     "eyes": "Ice Blue",
     "bio": "Nikolai's near-white hair and towering frame close out conceptual shows across Europe.",
-    "look": { "skin": "#eed3b8", "hair": "#e6e2da", "outfit": "#494f45", "style": "suit" }
+    "look": {
+      "skin": "#eed3b8",
+      "hair": "#e6e2da",
+      "outfit": "#494f45",
+      "style": "suit"
+    }
+  },
+  {
+    "id": "capture-luigi",
+    "source": "capture",
+    "name": "Luigi — Figurine Capture",
+    "agency": "Real Capture Test",
+    "city": "dylanebert/3dgs · Hugging Face",
+    "heightCm": 14,
+    "weightKg": 1,
+    "bustCm": 8,
+    "waistCm": 7,
+    "hipsCm": 8,
+    "shoeEu": 20,
+    "hair": "Brown (painted)",
+    "eyes": "Blue (painted)",
+    "bio": "A real 3D Gaussian splat capture of a Luigi figurine, converted from the 3DGS .ply in the dylanebert/3dgs dataset. On the board as a rendering test model until real human captures are trained.",
+    "look": {
+      "skin": "#f0c8a0",
+      "hair": "#5a3a20",
+      "outfit": "#2e7d32",
+      "style": "casual"
+    }
+  },
+  {
+    "id": "capture-nike",
+    "source": "capture",
+    "name": "Nike Trainer — Object Capture",
+    "agency": "Real Capture Test",
+    "city": "cakewalk/splat-data · Hugging Face",
+    "heightCm": 18,
+    "weightKg": 1,
+    "bustCm": 12,
+    "waistCm": 10,
+    "hipsCm": 12,
+    "shoeEu": 44,
+    "hair": "N/A",
+    "eyes": "N/A",
+    "bio": "A real 3D Gaussian splat capture of a Nike trainer from the antimatter15 splat demo set, downsampled to the board's 8 MB budget. On the board as a rendering test model until real human captures are trained.",
+    "look": {
+      "skin": "#d8d8d8",
+      "hair": "#333333",
+      "outfit": "#c8442c",
+      "style": "casual"
+    }
+  },
+  {
+    "id": "capture-plush",
+    "source": "capture",
+    "name": "Plush Bear — Object Capture",
+    "agency": "Real Capture Test",
+    "city": "cakewalk/splat-data · Hugging Face",
+    "heightCm": 35,
+    "weightKg": 1,
+    "bustCm": 30,
+    "waistCm": 28,
+    "hipsCm": 30,
+    "shoeEu": 18,
+    "hair": "Fur",
+    "eyes": "Black",
+    "bio": "A real 3D Gaussian splat capture of a plush bear from the antimatter15 splat demo set, downsampled to the board's 8 MB budget. On the board as a rendering test model until real human captures are trained.",
+    "look": {
+      "skin": "#c9a06a",
+      "hair": "#8a6a3a",
+      "outfit": "#c9a06a",
+      "style": "casual"
+    }
   }
 ]

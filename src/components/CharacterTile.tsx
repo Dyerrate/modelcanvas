@@ -5,12 +5,8 @@ import { SRGBColorSpace, type Group, type MeshBasicMaterial } from 'three';
 import type { SplatEntry } from '../types/manifest';
 import { useBoardStore } from '../hooks/useBoardStore';
 import SplatModel from './SplatModel';
-import {
-  FOCUS_ZOOM,
-  MOBILE_BREAKPOINT_PX,
-  MOBILE_SHEET_FRACTION,
-  PANEL_WIDTH_PX,
-} from '../config/board';
+import { TileScratch } from './ScratchFx';
+import { focusPlacement } from '../lib/focus';
 
 export const TILE_PLANE_H = 1.9;
 export const TILE_PLANE_W = TILE_PLANE_H * (256 / 342); // thumbnail aspect
@@ -97,6 +93,12 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
     if (isDragging && !isSelected) demote();
   }, [isDragging, isSelected, demote]);
 
+  // selection can arrive without a pointer (nav search) — promote so the
+  // live splat loads just like a click
+  useEffect(() => {
+    if (isSelected) promote(true);
+  }, [isSelected, promote]);
+
   // detail panel closed while the pointer is elsewhere → release the tile
   useEffect(() => {
     if (!isSelected && !hovered) scheduleDemote();
@@ -133,15 +135,7 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
       store.setSelected(null); // clicking a faded tile exits focus mode
       return;
     }
-    store.setSelected(entry.id);
-    // center the tile in the space the panel leaves free, at the zoom the
-    // camera is easing toward
-    if (typeof window !== 'undefined' && window.innerWidth <= MOBILE_BREAKPOINT_PX) {
-      const sheetShift = (MOBILE_SHEET_FRACTION / 2) * (window.innerHeight / FOCUS_ZOOM);
-      store.setPanTarget({ x, y: y - sheetShift });
-    } else {
-      store.setPanTarget({ x: x + PANEL_WIDTH_PX / (2 * FOCUS_ZOOM), y });
-    }
+    focusPlacement(entry.id, x, y);
     promote(true);
   };
 
@@ -198,6 +192,8 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
           toneMapped={false}
         />
       </mesh>
+      {/* drag-scratch overlay, alpha-masked to the figure by the thumbnail */}
+      <TileScratch mask={texture} entryId={entry.id} width={TILE_PLANE_W} height={TILE_PLANE_H} />
     </group>
   );
 }

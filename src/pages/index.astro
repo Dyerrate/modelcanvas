@@ -7,8 +7,10 @@ import BoardIsland from '../components/BoardIsland';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Splat Board</title>
-    <style>
+    <title>Model Canvas</title>
+    <!-- is:global — these style the React island's DOM, which Astro's default
+         scoped styles would never match -->
+    <style is:global>
       html,
       body {
         margin: 0;
@@ -23,10 +25,72 @@ import BoardIsland from '../components/BoardIsland';
           Roboto,
           sans-serif;
       }
+      :root {
+        --ink: #1c2333;
+        --ink-soft: #5c6478;
+        --glass-blur: blur(18px) saturate(1.6);
+      }
+      /* shared frosted-glass surface — components add radius + layout */
+      .glass {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.34));
+        border: 1px solid rgba(255, 255, 255, 0.75);
+        box-shadow:
+          0 12px 32px rgba(80, 90, 140, 0.14),
+          inset 0 1px 1px rgba(255, 255, 255, 0.9),
+          inset 0 -1px 1px rgba(255, 255, 255, 0.25);
+        -webkit-backdrop-filter: var(--glass-blur);
+        backdrop-filter: var(--glass-blur);
+      }
       #board-root {
         position: fixed;
         inset: 0;
         touch-action: none;
+      }
+      /* pastel aurora behind the transparent canvas — gives the glass
+         something to refract and echoes the drag-scratch iridescence */
+      .aurora {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .aurora span {
+        position: absolute;
+        width: 55vmax;
+        height: 55vmax;
+        border-radius: 50%;
+        filter: blur(90px);
+        opacity: 0.45;
+        will-change: transform;
+      }
+      .aurora span:nth-child(1) {
+        background: radial-gradient(circle, #9fe0ff 0%, transparent 65%);
+        top: -20vmax;
+        left: -15vmax;
+        animation: aurora-drift 34s ease-in-out infinite alternate;
+      }
+      .aurora span:nth-child(2) {
+        background: radial-gradient(circle, #ffc4e5 0%, transparent 65%);
+        bottom: -22vmax;
+        right: -12vmax;
+        animation: aurora-drift 42s ease-in-out infinite alternate-reverse;
+      }
+      .aurora span:nth-child(3) {
+        background: radial-gradient(circle, #cfc2ff 0%, transparent 65%);
+        top: 30%;
+        left: 55%;
+        width: 40vmax;
+        height: 40vmax;
+        opacity: 0.32;
+        animation: aurora-drift 27s ease-in-out infinite alternate;
+      }
+      @keyframes aurora-drift {
+        from {
+          transform: translate(0, 0) scale(1);
+        }
+        to {
+          transform: translate(8vmax, -6vmax) scale(1.15);
+        }
       }
     </style>
   </head>

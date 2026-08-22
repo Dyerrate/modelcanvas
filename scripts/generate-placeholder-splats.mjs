@@ -357,6 +357,7 @@ await mkdir(SPLATS_DIR, { recursive: true });
 await mkdir(THUMBS_DIR, { recursive: true });
 
 for (const meta of metas) {
+  if (meta.source === 'capture') continue; // real imports own these ids
   const rng = mulberry32(hashString(meta.id));
   const gaussians = buildFigure(meta, rng);
   const splat = encodeSplat(gaussians);
