@@ -51,7 +51,7 @@ The app is Astro + one React Three Fiber island (`client:only="react"`), so Thre
 ### Manifest build rules
 
 - Includes all `.splat` files in `public/splats/`.
-- Enforces max file size of **8 MB** per splat (oversized files fail with exit code 1).
+- Enforces max file size of **24 MB** per board-tier splat (`.full.*` focus tiers are exempt) (oversized files fail with exit code 1).
 - Resolves thumbnail in this order: `.png`, `.jpg`, `.webp`.
 - Merges matching metadata entry by `id` (`id` must equal splat basename).
 - Logs warnings for missing thumbnails or missing metadata.
@@ -68,12 +68,35 @@ The app is Astro + one React Three Fiber island (`client:only="react"`), so Thre
 ## Replacing placeholders with real captures
 
 1. Export each model as `.splat` and place in `public/splats/<id>.splat`.
-2. Keep each splat under **8 MB**.
+2. Keep each splat under **24 MB**.
 3. Add thumbnail in `public/thumbs/<id>.png` (or `.jpg` / `.webp`).
 4. Add or update matching metadata entry in `src/data/model-meta.json`.
 5. Run `npm run manifest`.
 
 Keep raw capture/intermediate files outside `public/` (for example in a gitignored source-assets folder).
+
+## Source-quality captures (Spark + SPZ)
+
+For a 3DGS `.ply` you want shown at full quality in focus view (e.g. `sam-sitting-v1`):
+
+1. Put the `.ply` in `assets-src/` (gitignored, never shipped — anything in `public/` deploys).
+2. Add an entry with `fullSpz: true` to `CAPTURES` in `scripts/import-real-splats.mjs`, then run
+   `node scripts/import-real-splats.mjs <id>`. Tune `rotateDeg` / `heightM` against the thumbnail.
+3. Add the metadata entry and run `npm run manifest`.
+
+Outputs: a capped board-tier `<id>.splat` + thumbnail (drei, shown on hover), and `<id>.full.spz` —
+every gaussian of the untouched source with degree-3 spherical harmonics, encoded by Spark's own SPZ
+writer (~9× smaller than the `.ply`, visually lossless). The full tier loads only when the model is
+focused and renders through `SparkSplat.tsx` (Spark is lazy-loaded). Board normalization isn't baked
+into the SPZ (that would resample SH); it lives in `src/data/splat-transforms.json` and is applied
+as the mesh transform at runtime.
+
+Floater cleanup is a `bustCrop` (drop everything below a y-level with a short opacity fade, measured
+after `rotateDeg`) plus far-outlier removal; surviving splats stay byte-identical. Avoid opacity or
+needle-shape filters on these captures — skin, hair and knit are built from faint, thin splats.
+
+`SparkSplat` composites splats in a separate RGBA16F pass: blending ~1%-opacity layers straight into
+the 8-bit canvas rounds them away and leaves green/purple blotches on skin.
 
 ## Runtime architecture
 
@@ -104,5 +127,5 @@ Keep raw capture/intermediate files outside `public/` (for example in a gitignor
 ## Engineer handoff notes
 
 - If models do not appear, check `src/data/splat-manifest.json` exists and IDs match filenames.
-- If build fails on assets, check for `.splat` files over 8 MB.
+- If build fails on assets, check for `.splat` files over 24 MB.
 - If panel/focus behavior seems wrong, inspect store fields in `useBoardStore.ts` (`selectedId`, `panTarget`, `isDragging`).

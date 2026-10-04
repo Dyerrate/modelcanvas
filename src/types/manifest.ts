@@ -33,5 +33,17 @@ export interface SplatEntry {
   splatUrl: string;
   thumbUrl: string;
   sizeBytes: number;
+  /** Uncapped Gaussian count, loaded only while this model is focused.
+   *  `.splat` renders via drei; `.spz` (source quality, with SH) via Spark. */
+  fullSplatUrl?: string;
+  /** Present for `.spz` full tiers: places the raw source in the tile frame. */
+  fullTransform?: SplatTransform;
   meta?: ModelMeta;
+}
+
+export interface SplatTransform {
+  position: [number, number, number];
+  /** three.js order: x, y, z, w */
+  quaternion: [number, number, number, number];
+  scale: number;
 }

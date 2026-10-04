@@ -36,7 +36,8 @@ export default function CameraRig() {
           state.isDragging !== prev.isDragging ||
           state.board !== prev.board ||
           state.panX !== prev.panX ||
-          state.panY !== prev.panY
+          state.panY !== prev.panY ||
+          state.focusZoomScale !== prev.focusZoomScale
         ) {
           invalidate();
         }
@@ -57,7 +58,8 @@ export default function CameraRig() {
     }
     if (performance.now() - v.t < SETTLE_PAINT_MS) invalidate();
 
-    const target = useBoardStore.getState().selectedId ? FOCUS_ZOOM : BASE_ZOOM;
+    const { selectedId, focusZoomScale } = useBoardStore.getState();
+    const target = selectedId ? FOCUS_ZOOM * focusZoomScale : BASE_ZOOM;
     const diff = target - camera.zoom;
     if (Math.abs(diff) < 0.15) {
       if (camera.zoom !== target) {

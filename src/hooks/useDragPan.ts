@@ -1,11 +1,14 @@
 import { useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { motionState, useBoardStore } from './useBoardStore';
+import { setFocusZoom } from '../lib/focus';
 
 const DRAG_DEAD_ZONE_PX = 4; // movement under this is a tap, not a drag
 const VELOCITY_EMA_ALPHA = 0.3;
 const MOMENTUM_DAMPING = 5; // ~exp decay constant, 1/s
 const SETTLE_EPSILON = 0.001; // world units/s
+const ROTATE_SPEED = 0.008; // radians per pixel of drag while focused
+const WHEEL_ZOOM_SPEED = 0.0015; // scale change per wheel deltaY unit while focused
 
 /**
  * Pointer drag → board pan with inertial momentum. Attaches directly to the
@@ -18,6 +21,7 @@ export function useDragPan() {
     pointerId: null as number | null,
     down: false,
     dragging: false,
+    rotating: false,
     lastX: 0,
     lastY: 0,
     lastT: 0,
@@ -39,7 +43,9 @@ export function useDragPan() {
       s.totalDist = 0;
       s.vx = 0;
       s.vy = 0;
-      useBoardStore.getState().setPanTarget(null); // user takes over the camera
+      // a focused model captures drags to orbit instead of panning the board
+      s.rotating = useBoardStore.getState().selectedId !== null;
+      if (!s.rotating) useBoardStore.getState().setPanTarget(null); // user takes over the camera
       el.setPointerCapture(e.pointerId);
     };
 
@@ -53,12 +59,21 @@ export function useDragPan() {
 
       if (!s.dragging && s.totalDist > DRAG_DEAD_ZONE_PX) {
         s.dragging = true;
-        const store = useBoardStore.getState();
-        store.setDragging(true);
-        // grabbing the board exits focus mode — the user wants to explore
-        if (store.selectedId) store.setSelected(null);
+        if (!s.rotating) {
+          const store = useBoardStore.getState();
+          store.setDragging(true);
+          // grabbing the board exits focus mode — the user wants to explore
+          if (store.selectedId) store.setSelected(null);
+        }
       }
       if (!s.dragging) return;
+
+      if (s.rotating) {
+        const { focusYaw, focusPitch, setFocusRotation } = useBoardStore.getState();
+        setFocusRotation(focusYaw + dx * ROTATE_SPEED, focusPitch + dy * ROTATE_SPEED);
+        invalidate();
+        return;
+      }
 
       // ortho camera: world delta = pixel delta / zoom. Content follows the
       // pointer, so the pan (camera) moves the opposite way. Screen y is
@@ -88,15 +103,26 @@ export function useDragPan() {
       invalidate();
     };
 
+    const onWheel = (e: WheelEvent) => {
+      const store = useBoardStore.getState();
+      if (!store.selectedId) return; // scroll only zooms the focused model
+      e.preventDefault();
+      const scale = store.focusZoomScale * (1 - e.deltaY * WHEEL_ZOOM_SPEED);
+      setFocusZoom(scale); // keeps the model anchored beside the panel
+      invalidate();
+    };
+
     el.addEventListener('pointerdown', onDown);
     el.addEventListener('pointermove', onMove);
     el.addEventListener('pointerup', onUp);
     el.addEventListener('pointercancel', onUp);
+    el.addEventListener('wheel', onWheel, { passive: false });
     return () => {
       el.removeEventListener('pointerdown', onDown);
       el.removeEventListener('pointermove', onMove);
       el.removeEventListener('pointerup', onUp);
       el.removeEventListener('pointercancel', onUp);
+      el.removeEventListener('wheel', onWheel);
     };
   }, [gl, camera, invalidate, s]);
 

@@ -568,5 +568,50 @@
       "outfit": "#c9a06a",
       "style": "casual"
     }
+  },
+  {
+    "id": "scene",
+    "source": "capture",
+    "name": "Scene Capture",
+    "agency": "Local Capture Test",
+    "city": "Local PLY Asset",
+    "heightCm": 200,
+    "weightKg": 1,
+    "bustCm": 100,
+    "waistCm": 80,
+    "hipsCm": 100,
+    "shoeEu": 42,
+    "hair": "N/A",
+    "eyes": "N/A",
+    "bio": "A local 3D Gaussian splat scene imported from scene.ply and downsampled for the board rendering test.",
+    "look": {
+      "skin": "#b7c5d1",
+      "hair": "#35404a",
+      "outfit": "#647d8f",
+      "style": "casual"
+    }
+  },
+  {
+    "id": "sam-sitting-v1",
+    "source": "capture",
+    "gender": "male",
+    "name": "Sam",
+    "agency": "Local Capture",
+    "city": "Seated Portrait v1",
+    "heightCm": 180,
+    "weightKg": 75,
+    "bustCm": 96,
+    "waistCm": 80,
+    "hipsCm": 95,
+    "shoeEu": 43,
+    "hair": "Brown",
+    "eyes": "Brown",
+    "bio": "Seated portrait capture. Focus view renders the source at full quality: all 1.5M gaussians with view-dependent (SH3) color, via Spark.",
+    "look": {
+      "skin": "#d9b8a0",
+      "hair": "#3b2a20",
+      "outfit": "#2f4a3c",
+      "style": "casual"
+    }
   }
 ]

@@ -59,7 +59,7 @@
     "id": "capture-plush",
     "splatUrl": "/splats/capture-plush.splat",
     "thumbUrl": "/thumbs/capture-plush.png",
-    "sizeBytes": 7864320,
+    "sizeBytes": 7994144,
     "meta": {
       "id": "capture-plush",
       "source": "capture",
@@ -79,6 +79,79 @@
         "skin": "#c9a06a",
         "hair": "#8a6a3a",
         "outfit": "#c9a06a",
+        "style": "casual"
+      }
+    }
+  },
+  {
+    "id": "sam-sitting-v1",
+    "splatUrl": "/splats/sam-sitting-v1.splat",
+    "thumbUrl": "/thumbs/sam-sitting-v1.png",
+    "sizeBytes": 24641536,
+    "fullSplatUrl": "/splats/sam-sitting-v1.full.spz",
+    "fullTransform": {
+      "position": [
+        -0.0290674,
+        -0.0985584,
+        0.0762521
+      ],
+      "quaternion": [
+        0.9238795,
+        0,
+        -0.3826834,
+        0
+      ],
+      "scale": 0.8355258
+    },
+    "meta": {
+      "id": "sam-sitting-v1",
+      "source": "capture",
+      "gender": "male",
+      "name": "Sam",
+      "agency": "Local Capture",
+      "city": "Seated Portrait v1",
+      "heightCm": 180,
+      "weightKg": 75,
+      "bustCm": 96,
+      "waistCm": 80,
+      "hipsCm": 95,
+      "shoeEu": 43,
+      "hair": "Brown",
+      "eyes": "Brown",
+      "bio": "Seated portrait capture. Focus view renders the source at full quality: all 1.5M gaussians with view-dependent (SH3) color, via Spark.",
+      "look": {
+        "skin": "#d9b8a0",
+        "hair": "#3b2a20",
+        "outfit": "#2f4a3c",
+        "style": "casual"
+      }
+    }
+  },
+  {
+    "id": "scene",
+    "splatUrl": "/splats/scene.splat",
+    "thumbUrl": "/thumbs/scene.png",
+    "sizeBytes": 24641536,
+    "fullSplatUrl": "/splats/scene.full.splat",
+    "meta": {
+      "id": "scene",
+      "source": "capture",
+      "name": "Scene Capture",
+      "agency": "Local Capture Test",
+      "city": "Local PLY Asset",
+      "heightCm": 200,
+      "weightKg": 1,
+      "bustCm": 100,
+      "waistCm": 80,
+      "hipsCm": 100,
+      "shoeEu": 42,
+      "hair": "N/A",
+      "eyes": "N/A",
+      "bio": "A local 3D Gaussian splat scene imported from scene.ply and downsampled for the board rendering test.",
+      "look": {
+        "skin": "#b7c5d1",
+        "hair": "#35404a",
+        "outfit": "#647d8f",
         "style": "casual"
       }
     }

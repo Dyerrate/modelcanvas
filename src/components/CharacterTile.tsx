@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import { useCursor, useTexture } from '@react-three/drei';
 import { SRGBColorSpace, type Group, type MeshBasicMaterial } from 'three';
 import type { SplatEntry } from '../types/manifest';
 import { useBoardStore } from '../hooks/useBoardStore';
 import SplatModel from './SplatModel';
+// Spark (and its inlined wasm) only downloads once a source-quality tier is focused
+const SparkSplat = lazy(() => import('./SparkSplat'));
 import { TileScratch } from './ScratchFx';
 import { focusPlacement } from '../lib/focus';
 
@@ -46,6 +48,7 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
     t.colorSpace = SRGBColorSpace;
   });
   const root = useRef<Group>(null);
+  const splatGroup = useRef<Group>(null);
   const mat = useRef<MeshBasicMaterial>(null);
   const grace = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const invalidate = useThree((s) => s.invalidate);
@@ -53,6 +56,11 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
   const isActive = useBoardStore((s) => s.activeTileId === entry.id);
   const isSelected = useBoardStore((s) => s.selectedId === entry.id);
   const isDragging = useBoardStore((s) => s.isDragging);
+
+  // focus mode swaps in the uncapped asset (if one was generated); the
+  // upgrade effect below re-shows the thumbnail until it finishes streaming
+  const activeSrc = isSelected && entry.fullSplatUrl ? entry.fullSplatUrl : entry.splatUrl;
+  const loadedSrc = useRef<string | null>(null);
 
   useCursor(hovered && !isDragging);
 
@@ -107,12 +115,22 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
 
   useEffect(() => () => clearTimeout(grace.current), []);
 
+  // src changed (board ↔ full quality) after already being live — re-suspend
+  useEffect(() => {
+    if (state === 'live' && loadedSrc.current !== null && loadedSrc.current !== activeSrc) {
+      setState('loading');
+      invalidate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSrc]);
+
   const liveAt = useRef(0);
   const onReady = useCallback(() => {
     liveAt.current = performance.now();
+    loadedSrc.current = activeSrc;
     setState((s) => (s === 'loading' ? 'live' : s));
     invalidate();
-  }, [invalidate]);
+  }, [invalidate, activeSrc]);
 
   const onPointerOver = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
@@ -158,6 +176,14 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
     // focus mode hides every tile except the selected one
     const sel = useBoardStore.getState().selectedId;
     const focusHidden = sel !== null && sel !== entry.id;
+    if (splatGroup.current) {
+      if (sel === entry.id) {
+        const { focusYaw, focusPitch } = useBoardStore.getState();
+        splatGroup.current.rotation.set(focusPitch, focusYaw, 0);
+      } else if (splatGroup.current.rotation.x !== 0 || splatGroup.current.rotation.y !== 0) {
+        splatGroup.current.rotation.set(0, 0, 0);
+      }
+    }
     const target = focusHidden || state === 'live' ? 0 : 1;
     const diff = target - m.opacity;
     if (diff === 0) {
@@ -173,8 +199,14 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
   return (
     <group ref={root} position={[x, y, 0]}>
       {state !== 'thumbnail' && (
-        <group scale={SPLAT_SCALE}>
-          <SplatModel entry={entry} onReady={onReady} />
+        <group ref={splatGroup} key={activeSrc} scale={SPLAT_SCALE}>
+          {activeSrc === entry.fullSplatUrl && entry.fullTransform ? (
+            <Suspense fallback={null}>
+              <SparkSplat src={activeSrc} transform={entry.fullTransform} onReady={onReady} />
+            </Suspense>
+          ) : (
+            <SplatModel src={activeSrc} onReady={onReady} />
+          )}
         </group>
       )}
       <mesh

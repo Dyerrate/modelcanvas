@@ -13,7 +13,7 @@ const THUMBS_DIR = path.join(root, 'public', 'thumbs');
 const META_PATH = path.join(root, 'src', 'data', 'model-meta.json');
 const OUT_PATH = path.join(root, 'src', 'data', 'splat-manifest.json');
 
-const MAX_SPLAT_BYTES = 8 * 1024 * 1024; // budget gate for 20–50 live models
+const MAX_SPLAT_BYTES = 24 * 1024 * 1024; // budget gate for 20–50 live models
 const THUMB_EXTENSIONS = ['.png', '.jpg', '.webp'];
 
 async function exists(p) {
@@ -27,7 +27,9 @@ async function exists(p) {
 
 let files = [];
 try {
-  files = (await readdir(SPLATS_DIR)).filter((f) => f.endsWith('.splat')).sort();
+  files = (await readdir(SPLATS_DIR))
+    .filter((f) => f.endsWith('.splat') && !f.endsWith('.full.splat'))
+    .sort();
 } catch {
   console.warn(`warn: ${SPLATS_DIR} does not exist yet — writing an empty manifest`);
 }
@@ -37,6 +39,12 @@ if (await exists(META_PATH)) {
   const metas = JSON.parse(await readFile(META_PATH, 'utf8'));
   metaById = new Map(metas.map((m) => [m.id, m]));
 }
+
+// runtime alignment for .full.spz tiers (written by import-real-splats.mjs)
+const TRANSFORMS_PATH = path.join(root, 'src', 'data', 'splat-transforms.json');
+const transforms = (await exists(TRANSFORMS_PATH))
+  ? JSON.parse(await readFile(TRANSFORMS_PATH, 'utf8'))
+  : {};
 
 const entries = [];
 const oversized = [];
@@ -65,11 +73,29 @@ for (const file of files) {
   const meta = metaById.get(id);
   if (!meta) console.warn(`warn: no model-meta.json entry for ${id}`);
 
+  // optional uncapped tier, loaded only in focus view — exempt from the
+  // per-file budget above since it's never downloaded while browsing.
+  // .full.spz (raw source + SH, rendered by Spark) wins over .full.splat.
+  let fullSplatUrl;
+  let fullTransform;
+  if (await exists(path.join(SPLATS_DIR, `${id}.full.spz`))) {
+    fullSplatUrl = `/splats/${id}.full.spz`;
+    fullTransform = transforms[id];
+    if (!fullTransform) {
+      console.error(`error: ${id}.full.spz has no entry in splat-transforms.json`);
+      process.exit(1);
+    }
+  } else if (await exists(path.join(SPLATS_DIR, `${id}.full.splat`))) {
+    fullSplatUrl = `/splats/${id}.full.splat`;
+  }
+
   entries.push({
     id,
     splatUrl: `/splats/${file}`,
     thumbUrl,
     sizeBytes,
+    ...(fullSplatUrl ? { fullSplatUrl } : {}),
+    ...(fullTransform ? { fullTransform } : {}),
     ...(meta ? { meta } : {}),
   });
 }

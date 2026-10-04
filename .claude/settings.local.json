@@ -14,7 +14,13 @@
       "PowerShell(npx astro check)",
       "PowerShell(npm run build 2>$null)",
       "PowerShell($dist = Get-ChildItem dist -Recurse -File; \"$\\($dist.Count\\) files, $\\([math]::Round\\(\\($dist | Measure-Object Length -Sum\\).Sum / 1MB, 1\\)\\) MB total\"; Get-ChildItem dist; Get-ChildItem dist\\\\splats | Select-Object -First 3 Name)",
-      "PowerShell(npx astro check 2>$null)"
+      "PowerShell(npx astro check 2>$null)",
+      "PowerShell(git log --oneline -6; git status --short; Get-ChildItem public\\\\splats | Where-Object { $_.Name -notmatch '^[a-z]+-[a-z]+\\\\.splat$' } | Select-Object Name, @{n='MB';e={[math]::Round\\($_.Length/1MB,2\\)}})",
+      "PowerShell($fs = [IO.File]::OpenRead\\(\"$PWD\\\\public\\\\splats\\\\sam_sitting_v1.ply\"\\); $buf = New-Object byte[] 4096; $n = $fs.Read\\($buf,0,4096\\); $fs.Close\\(\\); $txt = [Text.Encoding]::ASCII.GetString\\($buf,0,$n\\); $txt.Substring\\(0, $txt.IndexOf\\('end_header'\\) + 10\\))",
+      "PowerShell(npm view @sparkjsdev/spark version peerDependencies dependencies --json 2>$null)",
+      "PowerShell(npm view @mkkellogg/gaussian-splats-3d version peerDependencies --json 2>$null)",
+      "PowerShell(npm view @sparkjsdev/spark versions --json 2>$null | ConvertFrom-Json | Select-Object -Last 15; foreach \\($v in '0.1.10','1.0.0'\\) { \"--- $v\"; npm view \"@sparkjsdev/spark@$v\" peerDependencies --json 2>$null })",
+      "PowerShell(npm view @sparkjsdev/spark@0.1.10 dependencies devDependencies peerDependencies time.modified --json 2>$null)"
     ]
   }
 }

@@ -1,11 +1,19 @@
 // Imports real Gaussian-splat captures from public sources and normalizes
 // them to the board's conventions (antimatter15 .splat, y-down, vertically
 // centered, sized against the REF_HEIGHT_M frame), then renders the matching
-// alpha thumbnail. Run: node scripts/import-real-splats.mjs
+// alpha thumbnail. Run: node scripts/import-real-splats.mjs [id ...]
+// (pass ids to re-import just those captures).
 //
 // Downloads are cached in .cache/real-splats/ so re-runs (e.g. to tune a
-// rotation) are offline. Each import: prune floaters → importance-downsample
-// to the manifest's 8 MB budget → rotate/center/scale → write splat + thumb.
+// rotation) are offline. Local .ply sources live in assets-src/ (gitignored,
+// never shipped). Each import: prune floaters → importance-downsample to the
+// manifest's budget → rotate/center/scale → write splat + thumb.
+//
+// fullSpz captures additionally get a focus-only <id>.full.spz rendered by
+// Spark: every gaussian of the untouched source with its full spherical
+// harmonics. The board normalization is NOT baked into it (that would mean
+// resampling SH) — instead it's written to src/data/splat-transforms.json and
+// applied as the SplatMesh transform at runtime.
 //
 // .splat row layout (32 bytes per gaussian):
 //   float32 x, y, z        — center (loader negates z)
@@ -23,14 +31,16 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CACHE_DIR = path.join(root, '.cache', 'real-splats');
 const SPLATS_DIR = path.join(root, 'public', 'splats');
 const THUMBS_DIR = path.join(root, 'public', 'thumbs');
+const SOURCES_DIR = path.join(root, 'assets-src');
+const TRANSFORMS_PATH = path.join(root, 'src', 'data', 'splat-transforms.json');
 
 const THUMB_W = 256;
 const THUMB_H = 342;
 /** Must match REF_HEIGHT_M in CharacterTile.tsx (and the placeholder
  *  generator) so thumbnail and live splat align during the crossfade. */
 const REF_HEIGHT_M = 2.3;
-/** Keep under build-splat-manifest.mjs's 8 MB gate with some headroom. */
-const MAX_GAUSSIANS = Math.floor((7.5 * 1024 * 1024) / 32);
+/** Keep under build-splat-manifest.mjs's 24 MB gate with some headroom. */
+const MAX_GAUSSIANS = Math.floor((23.5 * 1024 * 1024) / 32);
 
 /**
  * Captures to import. rotateDeg is applied in file space (y-down) — tune it
@@ -59,6 +69,28 @@ const CAPTURES = [
     format: 'ply',
     heightM: 1.9,
     rotateDeg: [180, 0, 0], // y-up ply → y-down, and turn to face the camera
+  },
+  {
+    id: 'scene',
+    localPath: path.join(SOURCES_DIR, 'scene.ply'),
+    format: 'ply',
+    heightM: 2.0,
+    rotateDeg: [0, 0, 0],
+    // ship every pruned gaussian as a separate focus-only asset (no point
+    // count cap) — large, but only fetched when this model is selected
+    keepFull: true,
+  },
+  {
+    id: 'sam-sitting-v1',
+    localPath: path.join(SOURCES_DIR, 'sam_sitting_v1.ply'),
+    format: 'ply',
+    heightM: 1.4, // head-and-shoulders bust; its shoulder width fills the tile
+    rotateDeg: [0, -45, 0], // turn the 3/4 profile to face the board camera
+    // focus view gets the source at full quality (all gaussians + SH3) via Spark
+    fullSpz: true,
+    // below the chest the capture degrades into shards and chair/room
+    // fragments (~0.5% of splats) — cut a soft-edged bust just under the logo
+    bustCrop: { belowY: 0.8, fadeM: 0.08 },
   },
 ];
 
@@ -213,7 +245,10 @@ const rotateVec = (q, [vx, vy, vz]) => {
   return [vx + 2 * (w * uvx + uuvx), vy + 2 * (w * uvy + uuvy), vz + 2 * (w * uvz + uuvz)];
 };
 
-/** Rotate, then center on the bounding box, then scale to heightM tall. */
+/**
+ * Rotate, then center on the bounding box, then scale to heightM tall:
+ * p' = k * (R·p − c). Returns { q: R as [w,x,y,z], c, k }.
+ */
 function normalize(gaussians, rotateDeg, heightM) {
   const q = eulerToQuat(rotateDeg);
   for (const g of gaussians) {
@@ -236,7 +271,113 @@ function normalize(gaussians, rotateDeg, heightM) {
     g.sy *= k;
     g.sz *= k;
   }
-  return gaussians;
+  return { q, c, k };
+}
+
+/**
+ * The normalize() transform as a three.js object transform for a SplatMesh
+ * holding the raw source. drei's .splat loader shows file (x,y,z) at world
+ * (x,−y,−z) — a 180° turn about X (F) — while Spark loads files as-is, so the
+ * mesh needs world = F·k·(R·p − c): quaternion F⊗R, scale k, position −k·F·c.
+ */
+function meshTransform({ q, c, k }) {
+  const [w, x, y, z] = quatMul([0, 1, 0, 0], q);
+  const r = (v) => Number(v.toFixed(7));
+  return {
+    position: [-k * c[0], k * c[1], k * c[2]].map(r),
+    quaternion: [x, y, z, w].map(r), // three.js order
+    scale: r(k),
+  };
+}
+
+/**
+ * Floater cleanup for fullSpz captures, done on the raw .ply rows so every
+ * surviving gaussian keeps all its properties (incl. all SH) untouched:
+ *  - bust crop: drop everything below `bustCrop.belowY` (y-down source units,
+ *    measured after rotateDeg), easing opacity to zero over the last `fadeM`
+ *    above it so the cut reads as a soft edge instead of a hard slice
+ *  - far outliers: beyond 2.5× the 90th-percentile radius of what's left
+ * Deliberately no opacity or shape filter: captures like sam-sitting-v1 build
+ * skin, hair and knit out of faint, needle-thin splats (98% are under 25%
+ * opacity), so those filters erase real detail.
+ */
+function cleanSourcePly(raw, cap) {
+  const headerEnd = raw.indexOf('end_header\n') + 'end_header\n'.length;
+  const header = raw.toString('ascii', 0, headerEnd);
+  const n = parseInt(header.match(/element vertex (\d+)/)[1], 10);
+  const props = [...header.matchAll(/property (\S+) (\S+)/g)];
+  if (props.some(([, type]) => type !== 'float')) throw new Error('expected an all-float .ply');
+  const names = props.map(([, , name]) => name);
+  const P = names.length;
+  const [ix, iy, iz, iop] = ['x', 'y', 'z', 'opacity'].map((k) => names.indexOf(k));
+  const start = raw.byteOffset + headerEnd;
+  const rows = new Float32Array(raw.buffer.slice(start, start + n * P * 4));
+
+  const q = eulerToQuat(cap.rotateDeg);
+  const { belowY, fadeM } = cap.bustCrop;
+  const keep = new Uint8Array(n);
+  let cropped = 0;
+  for (let i = 0; i < n; i++) {
+    const o = i * P;
+    const y = rotateVec(q, [rows[o + ix], rows[o + iy], rows[o + iz]])[1];
+    const t = (belowY - y) / fadeM;
+    if (t <= 0) {
+      cropped++;
+      continue;
+    }
+    keep[i] = 1;
+    if (t < 1) {
+      const a = Math.max(1e-7, sigmoid(rows[o + iop]) * t * t * (3 - 2 * t));
+      rows[o + iop] = Math.log(a / (1 - a));
+    }
+  }
+
+  const kept = [];
+  for (let i = 0; i < n; i++) if (keep[i]) kept.push(i);
+  const med = (k) => {
+    const v = Float32Array.from(kept, (i) => rows[i * P + k]).sort();
+    return v[v.length >> 1];
+  };
+  const c = [med(ix), med(iy), med(iz)];
+  const dist = (i) =>
+    Math.hypot(rows[i * P + ix] - c[0], rows[i * P + iy] - c[1], rows[i * P + iz] - c[2]);
+  const maxR = percentile(Float32Array.from(kept, dist).sort(), 0.9) * 2.5;
+  let outliers = 0;
+  for (const i of kept) {
+    if (dist(i) > maxR) {
+      keep[i] = 0;
+      outliers++;
+    }
+  }
+
+  const count = kept.length - outliers;
+  const newHeader = header.replace(/element vertex \d+/, `element vertex ${count}`);
+  const ply = Buffer.alloc(newHeader.length + count * P * 4);
+  ply.write(newHeader, 0, 'ascii');
+  const src = Buffer.from(rows.buffer);
+  let w = newHeader.length;
+  for (const i of kept) {
+    if (!keep[i]) continue;
+    src.copy(ply, w, i * P * 4, (i + 1) * P * 4);
+    w += P * 4;
+  }
+  return { ply, count, cropped, outliers };
+}
+
+/**
+ * Re-encode the raw source as SPZ with Spark's own encoder (so Spark's
+ * decoder is guaranteed to agree): every gaussian, SH degree 3, v3 rotation
+ * encoding. SPZ quantizes, but at a level that's visually lossless.
+ */
+async function encodeFullSpz(raw, pathOrUrl) {
+  const { transcodeSpz } = await import('@sparkjsdev/spark');
+  const { fileBytes } = await transcodeSpz({
+    inputs: [{ fileBytes: new Uint8Array(raw.buffer, raw.byteOffset, raw.length), pathOrUrl }],
+    maxSh: 3,
+    opacityThreshold: 0,
+    version: 3,
+  });
+  return Buffer.from(fileBytes);
 }
 
 // --- .splat + thumbnail output --------------------------------------------------
@@ -367,13 +508,67 @@ function renderThumb(gaussians) {
 await mkdir(SPLATS_DIR, { recursive: true });
 await mkdir(THUMBS_DIR, { recursive: true });
 
-for (const cap of CAPTURES) {
+const only = process.argv.slice(2);
+const unknown = only.filter((id) => !CAPTURES.some((c) => c.id === id));
+if (unknown.length) throw new Error(`unknown capture id(s): ${unknown.join(', ')}`);
+const selected = only.length ? CAPTURES.filter((c) => only.includes(c.id)) : CAPTURES;
+
+const transforms = existsSync(TRANSFORMS_PATH)
+  ? JSON.parse(await readFile(TRANSFORMS_PATH, 'utf8'))
+  : {};
+
+for (const cap of selected) {
   console.log(`${cap.id}:`);
-  const raw = await fetchCached(cap.url, cap.id);
+  const raw = cap.localPath ? await readFile(cap.localPath) : await fetchCached(cap.url, cap.id);
+
+  if (cap.fullSpz) {
+    // both tiers come from one cleaned copy of the source; surviving rows
+    // (SH included) are byte-identical to the original apart from the fade
+    const { ply: cleaned, count, cropped, outliers } = cleanSourcePly(raw, cap);
+    const g = parseGaussianPly(cleaned);
+    // board tier: capped .splat (no opacity prune — this capture's look is
+    // built from faint layered splats), normalized like every other tile
+    const t = normalize(g, cap.rotateDeg, cap.heightM);
+    const capped = downsample(g, MAX_GAUSSIANS);
+    const splat = encodeSplat(capped);
+    await writeFile(path.join(SPLATS_DIR, `${cap.id}.splat`), splat);
+    await writeFile(path.join(THUMBS_DIR, `${cap.id}.png`), renderThumb(capped));
+    // focus tier: the cleaned source, aligned to the board tile at runtime
+    const spz = await encodeFullSpz(cleaned, cap.localPath ?? cap.url);
+    await writeFile(path.join(SPLATS_DIR, `${cap.id}.full.spz`), spz);
+    transforms[cap.id] = meshTransform(t);
+    console.log(
+      `  ${count + cropped + outliers} → cleaned (−${cropped} below bust crop, ` +
+        `−${outliers} far outliers) → board: ${capped.length} kept ` +
+        `(${(splat.length / 1024 / 1024).toFixed(2)} MB), full: ${count} + SH ` +
+        `(${(spz.length / 1024 / 1024).toFixed(2)} MB spz)`
+    );
+    continue;
+  }
+
   let g = cap.format === 'ply' ? parseGaussianPly(raw) : parseSplat(raw);
   const rawCount = g.length;
   g = prune(g);
   const prunedCount = g.length;
+
+  if (cap.keepFull) {
+    // normalize once against the full pruned set, then subset for the board
+    // tile — subsetting doesn't need re-normalizing, coordinates are already final
+    normalize(g, cap.rotateDeg, cap.heightM);
+    const full = encodeSplat(g);
+    await writeFile(path.join(SPLATS_DIR, `${cap.id}.full.splat`), full);
+    const capped = g.length > MAX_GAUSSIANS ? downsample(g, MAX_GAUSSIANS) : g;
+    const splat = encodeSplat(capped);
+    await writeFile(path.join(SPLATS_DIR, `${cap.id}.splat`), splat);
+    await writeFile(path.join(THUMBS_DIR, `${cap.id}.png`), renderThumb(capped));
+    console.log(
+      `  ${rawCount} → ${prunedCount} pruned → board: ${capped.length} kept ` +
+        `(${(splat.length / 1024 / 1024).toFixed(2)} MB), full: ${g.length} kept ` +
+        `(${(full.length / 1024 / 1024).toFixed(2)} MB)`
+    );
+    continue;
+  }
+
   g = downsample(g, MAX_GAUSSIANS);
   normalize(g, cap.rotateDeg, cap.heightM);
   const splat = encodeSplat(g);
@@ -384,4 +579,7 @@ for (const cap of CAPTURES) {
       `${(splat.length / 1024 / 1024).toFixed(2)} MB`
   );
 }
-console.log(`\nImported ${CAPTURES.length} captures. Re-run build-splat-manifest.mjs.`);
+await writeFile(TRANSFORMS_PATH, `${JSON.stringify(transforms, null, 2)}\n`);
+console.log(`\nImported ${selected.length} captures. Re-run build-splat-manifest.mjs.`);
+// Spark's wasm keeps a handle open once loaded — exit explicitly
+process.exit(0);

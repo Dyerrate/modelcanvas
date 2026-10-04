@@ -30,6 +30,13 @@ interface BoardState {
   /** When set, Board eases the pan toward this point (e.g. centering a
    *  clicked tile). Cleared by dragging or on arrival. */
   panTarget: { x: number; y: number } | null;
+  /** Orbit rotation (radians) applied to the focused tile's splat while a
+   *  model is selected — dragging spins it instead of panning the board. */
+  focusYaw: number;
+  focusPitch: number;
+  /** Extra zoom multiplier on top of FOCUS_ZOOM, controlled by the scroll
+   *  wheel while a model is selected. */
+  focusZoomScale: number;
   setBoard: (board: TalentBoard) => void;
   setPan: (x: number, y: number) => void;
   setDragging: (dragging: boolean) => void;
@@ -37,9 +44,15 @@ interface BoardState {
   setSelected: (id: string | null) => void;
   setBounds: (x: number, y: number) => void;
   setPanTarget: (target: { x: number; y: number } | null) => void;
+  setFocusRotation: (yaw: number, pitch: number) => void;
+  setFocusZoomScale: (scale: number) => void;
 }
 
 const clamp = (v: number, limit: number) => Math.min(limit, Math.max(-limit, v));
+/** Keep pitch shy of straight up/down so the orbit never flips through the pole. */
+const FOCUS_PITCH_LIMIT = 1.3;
+const MIN_FOCUS_ZOOM_SCALE = 1;
+const MAX_FOCUS_ZOOM_SCALE = 6;
 
 export const useBoardStore = create<BoardState>((set, get) => ({
   board: 'female',
@@ -50,6 +63,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   selectedId: null,
   bounds: { x: 0, y: 0 },
   panTarget: null,
+  focusYaw: 0,
+  focusPitch: 0,
+  focusZoomScale: 1,
   setBoard: (board) => {
     if (board === get().board) return;
     // fresh canvas: recenter and drop any selection/promotion from the old one
@@ -61,13 +77,20 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   },
   setDragging: (isDragging) => set({ isDragging }),
   setActiveTile: (activeTileId) => set({ activeTileId }),
-  setSelected: (selectedId) => set({ selectedId }),
+  // reset the orbit whenever focus opens/closes/switches models
+  setSelected: (selectedId) => set({ selectedId, focusYaw: 0, focusPitch: 0, focusZoomScale: 1 }),
   setBounds: (x, y) => set({ bounds: { x, y } }),
   setPanTarget: (target) => {
     if (!target) return set({ panTarget: null });
     const { bounds } = get();
     set({ panTarget: { x: clamp(target.x, bounds.x), y: clamp(target.y, bounds.y) } });
   },
+  setFocusRotation: (yaw, pitch) =>
+    set({ focusYaw: yaw, focusPitch: clamp(pitch, FOCUS_PITCH_LIMIT) }),
+  setFocusZoomScale: (scale) =>
+    set({
+      focusZoomScale: Math.min(MAX_FOCUS_ZOOM_SCALE, Math.max(MIN_FOCUS_ZOOM_SCALE, scale)),
+    }),
 }));
 
 // dev-only handles for poking the board from the console / test tooling

@@ -1,7 +1,6 @@
 import { Suspense, useCallback, useLayoutEffect, useRef } from 'react';
 import { Splat } from '@react-three/drei';
 import type { Group, Mesh, ShaderMaterial } from 'three';
-import type { SplatEntry } from '../types/manifest';
 
 /**
  * drei's Splat shader (v10.7.7) sizes gaussians with a perspective Jacobian
@@ -44,7 +43,7 @@ function ReadySignal({ onReady }: { onReady: () => void }) {
 }
 
 interface SplatModelProps {
-  entry: SplatEntry;
+  src: string;
   onReady: () => void;
 }
 
@@ -53,7 +52,7 @@ interface SplatModelProps {
  * fallback is nothing — the CharacterTile keeps its thumbnail plane at full
  * opacity, which acts as the visual placeholder.
  */
-export default function SplatModel({ entry, onReady }: SplatModelProps) {
+export default function SplatModel({ src, onReady }: SplatModelProps) {
   const group = useRef<Group>(null);
 
   const handleReady = useCallback(() => {
@@ -64,7 +63,7 @@ export default function SplatModel({ entry, onReady }: SplatModelProps) {
   return (
     <group ref={group}>
       <Suspense fallback={null}>
-        <Splat src={entry.splatUrl} />
+        <Splat src={src} />
         <ReadySignal onReady={handleReady} />
       </Suspense>
     </group>
