@@ -1,5 +1,7 @@
 ---
 import BoardIsland from '../components/BoardIsland';
+import '../styles/stage-gallery.css';
+import '../styles/editorial.css';
 ---
 
 <!doctype html>
@@ -8,6 +10,15 @@ import BoardIsland from '../components/BoardIsland';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Model Canvas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Inter and Bodoni Moda for the cover view and the gallery's museum
+         labels; Chakra Petch + JetBrains Mono for the graphic tee's screen
+         print. System fonts stand in until loaded -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400..600;1,400..600&family=Chakra+Petch:wght@700&family=Inter:ital,wght@0,300..600;1,400&family=JetBrains+Mono:wght@600&display=swap"
+      rel="stylesheet"
+    />
     <!-- is:global — these style the React island's DOM, which Astro's default
          scoped styles would never match -->
     <style is:global>

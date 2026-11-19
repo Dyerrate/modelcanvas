@@ -46,6 +46,13 @@ const transforms = (await exists(TRANSFORMS_PATH))
   ? JSON.parse(await readFile(TRANSFORMS_PATH, 'utf8'))
   : {};
 
+// captures that are another model's extra looks (meta.looks) — resolved
+// into that model's entry below instead of getting board tiles of their own
+const lookCaptures = new Set();
+for (const meta of metaById.values()) {
+  for (const look of meta.looks ?? []) if (look.capture !== meta.id) lookCaptures.add(look.capture);
+}
+
 const entries = [];
 const oversized = [];
 
@@ -71,7 +78,7 @@ for (const file of files) {
   }
 
   const meta = metaById.get(id);
-  if (!meta) console.warn(`warn: no model-meta.json entry for ${id}`);
+  if (!meta && !lookCaptures.has(id)) console.warn(`warn: no model-meta.json entry for ${id}`);
 
   // optional uncapped tier, loaded only in focus view — exempt from the
   // per-file budget above since it's never downloaded while browsing.
@@ -98,6 +105,44 @@ for (const file of files) {
     ...(fullTransform ? { fullTransform } : {}),
     ...(meta ? { meta } : {}),
   });
+}
+
+// lookbooks: attach each look's assets to its model, then drop the extra
+// looks' own entries from the board
+for (const entry of entries) {
+  const looks = entry.meta?.looks;
+  if (!looks) continue;
+  entry.looks = looks.map((look) => {
+    const source = entries.find((e) => e.id === look.capture);
+    if (!source) {
+      console.error(`error: ${entry.id} look ${look.capture} has no splat in ${SPLATS_DIR}`);
+      process.exit(1);
+    }
+    return {
+      ...look,
+      thumbUrl: source.thumbUrl,
+      ...(source.fullSplatUrl ? { fullSplatUrl: source.fullSplatUrl } : {}),
+      ...(source.fullTransform ? { fullTransform: source.fullTransform } : {}),
+    };
+  });
+}
+for (let i = entries.length - 1; i >= 0; i--) {
+  if (lookCaptures.has(entries[i].id)) entries.splice(i, 1);
+}
+
+// variants: extra board entries that reuse another capture's assets (same
+// splat, thumbnail and full tier) under their own id and meta — e.g. the
+// same scan shown on two differently themed focus stages
+for (const meta of metaById.values()) {
+  if (!meta.variantOf) continue;
+  const source = entries.find((e) => e.id === meta.variantOf);
+  if (!source) {
+    console.warn(`warn: ${meta.id} is a variant of missing entry ${meta.variantOf}`);
+    continue;
+  }
+  // the lookbook stays with the capture's own tile unless the variant asks for one
+  const { looks, ...assets } = source;
+  entries.push({ ...assets, id: meta.id, meta, ...(meta.looks && looks ? { looks } : {}) });
 }
 
 if (oversized.length > 0) {

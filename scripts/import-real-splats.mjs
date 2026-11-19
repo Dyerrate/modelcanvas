@@ -36,8 +36,8 @@ const TRANSFORMS_PATH = path.join(root, 'src', 'data', 'splat-transforms.json');
 
 const THUMB_W = 256;
 const THUMB_H = 342;
-/** Must match REF_HEIGHT_M in CharacterTile.tsx (and the placeholder
- *  generator) so thumbnail and live splat align during the crossfade. */
+/** Must match REF_HEIGHT_M in config/board.ts so thumbnail and live splat
+ *  align during the crossfade. */
 const REF_HEIGHT_M = 2.3;
 /** Keep under build-splat-manifest.mjs's 24 MB gate with some headroom. */
 const MAX_GAUSSIANS = Math.floor((23.5 * 1024 * 1024) / 32);
@@ -50,37 +50,6 @@ const MAX_GAUSSIANS = Math.floor((23.5 * 1024 * 1024) / 32);
  */
 const CAPTURES = [
   {
-    id: 'capture-nike',
-    url: 'https://huggingface.co/cakewalk/splat-data/resolve/main/nike.splat',
-    format: 'splat',
-    heightM: 0.8, // shoes are long — keep the toe-to-heel span inside the tile
-    rotateDeg: [0, 0, 0],
-  },
-  {
-    id: 'capture-plush',
-    url: 'https://huggingface.co/cakewalk/splat-data/resolve/main/plush.splat',
-    format: 'splat',
-    heightM: 1.8,
-    rotateDeg: [0, 0, 90], // capture lies on its side
-  },
-  {
-    id: 'capture-luigi',
-    url: 'https://huggingface.co/datasets/dylanebert/3dgs/resolve/main/luigi/luigi.ply',
-    format: 'ply',
-    heightM: 1.9,
-    rotateDeg: [180, 0, 0], // y-up ply → y-down, and turn to face the camera
-  },
-  {
-    id: 'scene',
-    localPath: path.join(SOURCES_DIR, 'scene.ply'),
-    format: 'ply',
-    heightM: 2.0,
-    rotateDeg: [0, 0, 0],
-    // ship every pruned gaussian as a separate focus-only asset (no point
-    // count cap) — large, but only fetched when this model is selected
-    keepFull: true,
-  },
-  {
     id: 'sam-sitting-v1',
     localPath: path.join(SOURCES_DIR, 'sam_sitting_v1.ply'),
     format: 'ply',
@@ -91,6 +60,27 @@ const CAPTURES = [
     // below the chest the capture degrades into shards and chair/room
     // fragments (~0.5% of splats) — cut a soft-edged bust just under the logo
     bustCrop: { belowY: 0.8, fadeM: 0.08 },
+  },
+  {
+    // a second look of Sam (see model-meta `looks`), not a board tile of its own
+    id: 'sam-sitting-v2',
+    localPath: path.join(SOURCES_DIR, 'sam_sitting_v2.ply'),
+    format: 'ply',
+    heightM: 1.4, // waist-up: same frame height as v1's bust, so the looks swap in place
+    rotateDeg: [0, -25, 0],
+    fullSpz: true,
+    // the lap and chair dissolve into shards — fade out across the hands
+    bustCrop: { belowY: 0.04, fadeM: 0.1 },
+  },
+  {
+    // full-length, suited — the model of the editorial cover view
+    id: 'alex-v1',
+    localPath: path.join(SOURCES_DIR, 'full_alex_v1.ply'),
+    format: 'ply',
+    heightM: 2.0, // head to shoe, inside the REF_HEIGHT_M frame
+    rotateDeg: [0, -90, 0], // face the board camera
+    fullSpz: true,
+    // a clean scan from crown to shoe — no crop, only the far-outlier sweep
   },
 ];
 
@@ -293,7 +283,7 @@ function meshTransform({ q, c, k }) {
 /**
  * Floater cleanup for fullSpz captures, done on the raw .ply rows so every
  * surviving gaussian keeps all its properties (incl. all SH) untouched:
- *  - bust crop: drop everything below `bustCrop.belowY` (y-down source units,
+ *  - bust crop (optional): drop everything below `bustCrop.belowY` (y-down source units,
  *    measured after rotateDeg), easing opacity to zero over the last `fadeM`
  *    above it so the cut reads as a soft edge instead of a hard slice
  *  - far outliers: beyond 2.5× the 90th-percentile radius of what's left
@@ -314,7 +304,7 @@ function cleanSourcePly(raw, cap) {
   const rows = new Float32Array(raw.buffer.slice(start, start + n * P * 4));
 
   const q = eulerToQuat(cap.rotateDeg);
-  const { belowY, fadeM } = cap.bustCrop;
+  const { belowY, fadeM } = cap.bustCrop ?? { belowY: Infinity, fadeM: 1 };
   const keep = new Uint8Array(n);
   let cropped = 0;
   for (let i = 0; i < n; i++) {

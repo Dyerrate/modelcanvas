@@ -9,7 +9,6 @@
     "preview": "astro preview",
     "astro": "astro",
     "manifest": "node scripts/build-splat-manifest.mjs",
-    "splats:placeholder": "node scripts/generate-placeholder-splats.mjs",
     "prebuild": "npm run manifest",
     "predev": "npm run manifest"
   },
@@ -18,6 +17,7 @@
     "@react-three/drei": "^10.0.0",
     "@react-three/fiber": "^9.0.0",
     "@sparkjsdev/spark": "^2.3.1",
+    "animejs": "^4.5.0",
     "astro": "^5.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

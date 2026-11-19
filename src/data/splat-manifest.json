@@ -1,86 +1,114 @@
 [
   {
-    "id": "capture-luigi",
-    "splatUrl": "/splats/capture-luigi.splat",
-    "thumbUrl": "/thumbs/capture-luigi.png",
-    "sizeBytes": 464832,
+    "id": "alex-v1",
+    "splatUrl": "/splats/alex-v1.splat",
+    "thumbUrl": "/thumbs/alex-v1.png",
+    "sizeBytes": 12644704,
+    "fullSplatUrl": "/splats/alex-v1.full.spz",
+    "fullTransform": {
+      "position": [
+        0.0256764,
+        -0.0102092,
+        0.0097021
+      ],
+      "quaternion": [
+        0.7071068,
+        0,
+        -0.7071068,
+        0
+      ],
+      "scale": 1.0937022
+    },
     "meta": {
-      "id": "capture-luigi",
+      "id": "alex-v1",
       "source": "capture",
-      "name": "Luigi — Figurine Capture",
-      "agency": "Real Capture Test",
-      "city": "dylanebert/3dgs · Hugging Face",
-      "heightCm": 14,
-      "weightKg": 1,
-      "bustCm": 8,
-      "waistCm": 7,
-      "hipsCm": 8,
-      "shoeEu": 20,
-      "hair": "Brown (painted)",
-      "eyes": "Blue (painted)",
-      "bio": "A real 3D Gaussian splat capture of a Luigi figurine, converted from the 3DGS .ply in the dylanebert/3dgs dataset. On the board as a rendering test model until real human captures are trained.",
-      "look": {
-        "skin": "#f0c8a0",
-        "hair": "#5a3a20",
-        "outfit": "#2e7d32",
-        "style": "casual"
-      }
-    }
-  },
-  {
-    "id": "capture-nike",
-    "splatUrl": "/splats/capture-nike.splat",
-    "thumbUrl": "/thumbs/capture-nike.png",
-    "sizeBytes": 7558208,
-    "meta": {
-      "id": "capture-nike",
-      "source": "capture",
-      "name": "Nike Trainer — Object Capture",
-      "agency": "Real Capture Test",
-      "city": "cakewalk/splat-data · Hugging Face",
-      "heightCm": 18,
-      "weightKg": 1,
-      "bustCm": 12,
-      "waistCm": 10,
-      "hipsCm": 12,
+      "name": "Alex",
+      "agency": "Model Canvas",
+      "city": "Milano",
+      "heightCm": 185,
+      "weightKg": 75,
+      "bustCm": 97,
+      "waistCm": 76,
+      "hipsCm": 94,
       "shoeEu": 44,
-      "hair": "N/A",
-      "eyes": "N/A",
-      "bio": "A real 3D Gaussian splat capture of a Nike trainer from the antimatter15 splat demo set, downsampled to the board's 8 MB budget. On the board as a rendering test model until real human captures are trained.",
+      "hair": "Brown",
+      "eyes": "Brown",
+      "bio": "Full-length runway capture in tailoring, rendered at source quality with view-dependent colour.",
       "look": {
-        "skin": "#d8d8d8",
-        "hair": "#333333",
-        "outfit": "#c8442c",
-        "style": "casual"
-      }
-    }
-  },
-  {
-    "id": "capture-plush",
-    "splatUrl": "/splats/capture-plush.splat",
-    "thumbUrl": "/thumbs/capture-plush.png",
-    "sizeBytes": 7994144,
-    "meta": {
-      "id": "capture-plush",
-      "source": "capture",
-      "name": "Plush Bear — Object Capture",
-      "agency": "Real Capture Test",
-      "city": "cakewalk/splat-data · Hugging Face",
-      "heightCm": 35,
-      "weightKg": 1,
-      "bustCm": 30,
-      "waistCm": 28,
-      "hipsCm": 30,
-      "shoeEu": 18,
-      "hair": "Fur",
-      "eyes": "Black",
-      "bio": "A real 3D Gaussian splat capture of a plush bear from the antimatter15 splat demo set, downsampled to the board's 8 MB budget. On the board as a rendering test model until real human captures are trained.",
-      "look": {
-        "skin": "#c9a06a",
-        "hair": "#8a6a3a",
-        "outfit": "#c9a06a",
-        "style": "casual"
-      }
+        "skin": "#d9b08c",
+        "hair": "#2a1f18",
+        "outfit": "#25262b",
+        "style": "suit"
+      },
+      "stage": {
+        "heightRange": [
+          -1.03,
+          1
+        ],
+        "badge": "RUNWAY EDIT",
+        "unit": "Look 01"
+      },
+      "editorial": {
+        "season": "Autumn / Winter 2026",
+        "look": 1,
+        "title": "The Suit",
+        "standfirst": "A single-breasted suit in charcoal wool, cut long and lean, over a crisp white shirt and a slim black tie.",
+        "pieces": [
+          {
+            "label": "Tailoring",
+            "name": "Single-breasted suit",
+            "detail": "Charcoal virgin wool · half-canvassed"
+          },
+          {
+            "label": "Shirting",
+            "name": "Poplin shirt & slim tie",
+            "detail": "White cotton poplin · black silk tie"
+          },
+          {
+            "label": "Footwear",
+            "name": "Whole-cut oxford",
+            "detail": "Hand-welted · antiqued black calf"
+          }
+        ]
+      },
+      "stats": [
+        [
+          "Height",
+          "6′1″"
+        ],
+        [
+          "Collar",
+          "15.5″"
+        ],
+        [
+          "Waist",
+          "30″"
+        ],
+        [
+          "Suit",
+          "39″/49L"
+        ],
+        [
+          "Sleeve",
+          "34″"
+        ],
+        [
+          "Inseam",
+          "32″"
+        ],
+        [
+          "Shoe",
+          "11 US"
+        ],
+        [
+          "Hair",
+          "Brown"
+        ],
+        [
+          "Eyes",
+          "Brown"
+        ]
+      ]
     }
   },
   {
@@ -118,42 +146,155 @@
       "shoeEu": 43,
       "hair": "Brown",
       "eyes": "Brown",
-      "bio": "Seated portrait capture. Focus view renders the source at full quality: all 1.5M gaussians with view-dependent (SH3) color, via Spark.",
+      "bio": "Seated portrait captures, rendered at source quality with view-dependent colour.",
       "look": {
         "skin": "#d9b8a0",
         "hair": "#3b2a20",
         "outfit": "#2f4a3c",
         "style": "casual"
+      },
+      "stage": {
+        "heightRange": [
+          -0.74,
+          0.73
+        ],
+        "badge": "HI-RES · SPZ",
+        "unit": "Two looks"
+      },
+      "wardrobe": {
+        "mask": [
+          -0.05,
+          0.05,
+          -0.02
+        ],
+        "tone": [
+          0.2,
+          0.6,
+          0.32,
+          0
+        ],
+        "map": [
+          0.5,
+          0.4,
+          0.89,
+          0.31
+        ],
+        "collar": [
+          -0.08,
+          -0.6,
+          0.09,
+          -0.26
+        ],
+        "patch": [
+          0.21,
+          -0.69,
+          0.085,
+          0.055
+        ]
+      },
+      "lookPortraits": true,
+      "looks": [
+        {
+          "capture": "sam-sitting-v1",
+          "name": "Cable Knit",
+          "note": "Seated portrait · bottle-green cable knit",
+          "swatch": "#24402f",
+          "standfirst": "A bottle-green cable knit with a contrast collar, worn seated: soft shoulders, heavy yarn, nothing else needed.",
+          "pieces": [
+            {
+              "label": "Knitwear",
+              "name": "Cable-knit crew",
+              "detail": "Bottle-green lambswool · ecru trim"
+            }
+          ]
+        },
+        {
+          "capture": "sam-sitting-v2",
+          "name": "Rust Tee",
+          "note": "Seated, waist-up · garment-dyed rust tee",
+          "swatch": "#a8682c",
+          "heightRange": [
+            -0.67,
+            0.71
+          ],
+          "room": "studio",
+          "standfirst": "A garment-dyed tee in rust, cut boxy and worn alone: the off-duty look, seated and waist-up.",
+          "pieces": [
+            {
+              "label": "Jersey",
+              "name": "Garment-dyed tee",
+              "detail": "Rust cotton jersey · heavyweight"
+            }
+          ]
+        }
+      ]
+    },
+    "looks": [
+      {
+        "capture": "sam-sitting-v1",
+        "name": "Cable Knit",
+        "note": "Seated portrait · bottle-green cable knit",
+        "swatch": "#24402f",
+        "standfirst": "A bottle-green cable knit with a contrast collar, worn seated: soft shoulders, heavy yarn, nothing else needed.",
+        "pieces": [
+          {
+            "label": "Knitwear",
+            "name": "Cable-knit crew",
+            "detail": "Bottle-green lambswool · ecru trim"
+          }
+        ],
+        "thumbUrl": "/thumbs/sam-sitting-v1.png",
+        "fullSplatUrl": "/splats/sam-sitting-v1.full.spz",
+        "fullTransform": {
+          "position": [
+            -0.0290674,
+            -0.0985584,
+            0.0762521
+          ],
+          "quaternion": [
+            0.9238795,
+            0,
+            -0.3826834,
+            0
+          ],
+          "scale": 0.8355258
+        }
+      },
+      {
+        "capture": "sam-sitting-v2",
+        "name": "Rust Tee",
+        "note": "Seated, waist-up · garment-dyed rust tee",
+        "swatch": "#a8682c",
+        "heightRange": [
+          -0.67,
+          0.71
+        ],
+        "room": "studio",
+        "standfirst": "A garment-dyed tee in rust, cut boxy and worn alone: the off-duty look, seated and waist-up.",
+        "pieces": [
+          {
+            "label": "Jersey",
+            "name": "Garment-dyed tee",
+            "detail": "Rust cotton jersey · heavyweight"
+          }
+        ],
+        "thumbUrl": "/thumbs/sam-sitting-v2.png",
+        "fullSplatUrl": "/splats/sam-sitting-v2.full.spz",
+        "fullTransform": {
+          "position": [
+            -0.0726936,
+            -0.6550037,
+            -0.0457039
+          ],
+          "quaternion": [
+            0.976296,
+            0,
+            -0.2164396,
+            0
+          ],
+          "scale": 1.4785627
+        }
       }
-    }
-  },
-  {
-    "id": "scene",
-    "splatUrl": "/splats/scene.splat",
-    "thumbUrl": "/thumbs/scene.png",
-    "sizeBytes": 24641536,
-    "fullSplatUrl": "/splats/scene.full.splat",
-    "meta": {
-      "id": "scene",
-      "source": "capture",
-      "name": "Scene Capture",
-      "agency": "Local Capture Test",
-      "city": "Local PLY Asset",
-      "heightCm": 200,
-      "weightKg": 1,
-      "bustCm": 100,
-      "waistCm": 80,
-      "hipsCm": 100,
-      "shoeEu": 42,
-      "hair": "N/A",
-      "eyes": "N/A",
-      "bio": "A local 3D Gaussian splat scene imported from scene.ply and downsampled for the board rendering test.",
-      "look": {
-        "skin": "#b7c5d1",
-        "hair": "#35404a",
-        "outfit": "#647d8f",
-        "style": "casual"
-      }
-    }
+    ]
   }
 ]

@@ -65,6 +65,9 @@ export default function GlassNav() {
           justify-content: center;
           flex-wrap: wrap;
           gap: 10px;
+          /* left: 50% would shrink-wrap the nav to half the window and wrap
+             it onto two rows below ~1130px; size it to its content instead */
+          width: max-content;
           max-width: calc(100vw - 24px);
           color: var(--ink);
         }

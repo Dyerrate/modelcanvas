@@ -8,14 +8,15 @@ import SplatModel from './SplatModel';
 // Spark (and its inlined wasm) only downloads once a source-quality tier is focused
 const SparkSplat = lazy(() => import('./SparkSplat'));
 import { TileScratch } from './ScratchFx';
+import AtelierBadge from './AtelierBadge';
 import { focusPlacement } from '../lib/focus';
+import { galleryFx } from '../lib/galleryFx';
+import { lookSwapFx } from '../lib/lookSwap';
+import { useLookStore } from '../hooks/useLookStore';
+import { SPLAT_SCALE, TILE_PLANE_H } from '../config/board';
 
-export const TILE_PLANE_H = 1.9;
+export { TILE_PLANE_H };
 export const TILE_PLANE_W = TILE_PLANE_H * (256 / 342); // thumbnail aspect
-/** World meters mapped to the full tile height — must match REF_HEIGHT_M in
- *  scripts/generate-placeholder-splats.mjs so thumb and splat align. */
-const REF_HEIGHT_M = 2.3;
-const SPLAT_SCALE = TILE_PLANE_H / REF_HEIGHT_M;
 const DEMOTE_GRACE_MS = 300;
 const FADE_SECONDS = 0.15;
 /** Slower fade for hiding/revealing the rest of the board in focus mode. */
@@ -57,9 +58,14 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
   const isSelected = useBoardStore((s) => s.selectedId === entry.id);
   const isDragging = useBoardStore((s) => s.isDragging);
 
-  // focus mode swaps in the uncapped asset (if one was generated); the
-  // upgrade effect below re-shows the thumbnail until it finishes streaming
-  const activeSrc = isSelected && entry.fullSplatUrl ? entry.fullSplatUrl : entry.splatUrl;
+  // focus mode swaps in the uncapped asset (if one was generated) of the
+  // look on show; the upgrade effect below re-shows the thumbnail until it
+  // finishes streaming
+  const lookIndex = useLookStore((s) => (isSelected ? s.look : 0));
+  const look = entry.looks?.[lookIndex];
+  const fullUrl = look ? look.fullSplatUrl : entry.fullSplatUrl;
+  const fullTransform = look ? look.fullTransform : entry.fullTransform;
+  const activeSrc = isSelected && fullUrl ? fullUrl : entry.splatUrl;
   const loadedSrc = useRef<string | null>(null);
 
   useCursor(hovered && !isDragging);
@@ -96,7 +102,7 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
     if (!isActive) demote();
   }, [isActive, demote]);
 
-  // dragging demotes everything except the tile open in the detail panel
+  // dragging demotes everything except the focused tile
   useEffect(() => {
     if (isDragging && !isSelected) demote();
   }, [isDragging, isSelected, demote]);
@@ -107,7 +113,7 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
     if (isSelected) promote(true);
   }, [isSelected, promote]);
 
-  // detail panel closed while the pointer is elsewhere → release the tile
+  // focus closed while the pointer is elsewhere → release the tile
   useEffect(() => {
     if (!isSelected && !hovered) scheduleDemote();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -159,7 +165,16 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
 
   // manual frustum culling (ortho AABB) + thumbnail crossfade
   useFrame(({ size, camera }, delta) => {
+    const selNow = useBoardStore.getState().selectedId === entry.id;
+    if (selNow) {
+      // in the gallery the live piece rides its frame along the wall, and
+      // tells the hang once its splat tier is up
+      const up = state === 'live' && loadedSrc.current === activeSrc;
+      if (!up) galleryFx.readyAt = 0;
+      else if (galleryFx.readyAt === 0) galleryFx.readyAt = performance.now();
+    }
     if (root.current) {
+      root.current.position.x = x + (selNow ? galleryFx.splatOffset : 0);
       const { panX, panY } = useBoardStore.getState();
       const halfW = size.width / (2 * camera.zoom) + TILE_PLANE_W;
       const halfH = size.height / (2 * camera.zoom) + TILE_PLANE_H;
@@ -179,12 +194,22 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
     if (splatGroup.current) {
       if (sel === entry.id) {
         const { focusYaw, focusPitch } = useBoardStore.getState();
-        splatGroup.current.rotation.set(focusPitch, focusYaw, 0);
+        splatGroup.current.rotation.set(focusPitch + galleryFx.tiltX, focusYaw + galleryFx.tiltY, 0);
       } else if (splatGroup.current.rotation.x !== 0 || splatGroup.current.rotation.y !== 0) {
         splatGroup.current.rotation.set(0, 0, 0);
       }
     }
-    const target = focusHidden || state === 'live' ? 0 : 1;
+    // in the gallery, the frame already shows a still of this look
+    const framed =
+      sel === entry.id && useBoardStore.getState().view === 'gallery' && !!entry.meta?.lookPortraits;
+    // the thumbnail is the first look — never a stand-in for another one
+    const looks = useLookStore.getState();
+    const otherLook = sel === entry.id && (looks.look !== 0 || looks.swap !== 'idle');
+    // the cover unveils a source-quality model from an empty page (a
+    // board-tier splat has no curtain, so its thumbnail stands in)
+    const awaitingEntrance = sel === entry.id && !!fullTransform && activeSrc === fullUrl;
+    const target =
+      focusHidden || state === 'live' || framed || otherLook || awaitingEntrance ? 0 : 1;
     const diff = target - m.opacity;
     if (diff === 0) {
       if (state === 'demoting') setState('thumbnail'); // fade finished → unmount
@@ -200,9 +225,17 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
     <group ref={root} position={[x, y, 0]}>
       {state !== 'thumbnail' && (
         <group ref={splatGroup} key={activeSrc} scale={SPLAT_SCALE}>
-          {activeSrc === entry.fullSplatUrl && entry.fullTransform ? (
+          {activeSrc === fullUrl && fullTransform ? (
             <Suspense fallback={null}>
-              <SparkSplat src={activeSrc} transform={entry.fullTransform} onReady={onReady} />
+              <SparkSplat
+                src={activeSrc}
+                transform={fullTransform}
+                onReady={onReady}
+                // try-on garments are cut for the entry's own capture
+                wardrobe={!!entry.meta?.wardrobe && lookIndex === 0}
+                gallery={galleryFx.composite}
+                swap={lookSwapFx.composite}
+              />
             </Suspense>
           ) : (
             <SplatModel src={activeSrc} onReady={onReady} />
@@ -226,6 +259,16 @@ export default function CharacterTile({ entry, x, y }: CharacterTileProps) {
       </mesh>
       {/* drag-scratch overlay, alpha-masked to the figure by the thumbnail */}
       <TileScratch mask={texture} entryId={entry.id} width={TILE_PLANE_W} height={TILE_PLANE_H} />
+      {entry.meta?.stage && (
+        <AtelierBadge
+          mask={texture}
+          hovered={hovered}
+          width={TILE_PLANE_W}
+          height={TILE_PLANE_H}
+          label={entry.meta.stage.badge}
+          look={entry.meta.stage.unit}
+        />
+      )}
     </group>
   );
 }

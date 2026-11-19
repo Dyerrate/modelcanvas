@@ -1,0 +1,398 @@
+/* ---------------------------------------------------------------------
+   Gallery theme — every focused model opens as a white-cube exhibition
+   (GalleryStage paints the room in 3D; BoardIsland sets
+   data-stage="gallery"). Museum typography: a neutral grotesk, small caps,
+   generous air.
+   --------------------------------------------------------------------- */
+
+.board-shell {
+  --g-ink: #161514;
+  --g-soft: #6f6b65;
+  --g-rule: rgba(22, 21, 20, 0.14);
+  --g-sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+}
+.board-shell[data-stage='gallery'] {
+  --ink: var(--g-ink);
+  --ink-soft: var(--g-soft);
+}
+.board-shell .aurora {
+  transition: opacity 0.6s ease;
+}
+.board-shell[data-stage='gallery'] .aurora {
+  opacity: 0;
+}
+.board-shell[data-stage='gallery'] .glass {
+  background: rgba(250, 249, 246, 0.9);
+  border-color: var(--g-rule);
+  box-shadow: 0 6px 20px rgba(30, 28, 24, 0.06);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.board-shell[data-stage='gallery'] .glass-nav {
+  font-family: var(--g-sans);
+}
+.board-shell[data-stage='gallery'] .glass-nav .brand .dot {
+  background: var(--g-ink);
+  box-shadow: none;
+}
+.board-shell[data-stage='gallery'] .glass-nav .tabs button.active {
+  color: #fff;
+  background: var(--g-ink);
+  box-shadow: none;
+}
+
+/* ------------------------------------------------------------- chrome */
+.gallery-hud {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  font-family: var(--g-sans);
+  color: var(--g-ink);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.gallery-hud.open {
+  opacity: 1;
+  transition-delay: 0.35s;
+}
+.gallery-hud.open button {
+  pointer-events: auto;
+}
+
+/* the exhibition card hangs over whichever room is on the left, so it
+   carries its own frosted plate */
+.gallery-hud .exhibition {
+  position: absolute;
+  left: 24px;
+  top: 84px;
+  width: 250px;
+  padding: 18px 20px 16px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background: rgba(250, 249, 246, 0.84);
+  box-shadow: 0 6px 20px rgba(20, 18, 15, 0.12);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.gallery-hud .kicker {
+  margin: 0 0 14px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--g-soft);
+}
+.gallery-hud .exhibition h1 {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.gallery-hud .show {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--g-soft);
+}
+.gallery-hud .intro {
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--g-rule);
+  font-size: 12px;
+  line-height: 1.65;
+  color: #4a4742;
+}
+
+/* museum wall label: white card, flush to the wall, beside the work */
+.gallery-hud .wall-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 268px;
+  padding: 18px 20px 16px;
+  box-sizing: border-box;
+  background: #fdfcfa;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.04),
+    0 2px 6px rgba(30, 28, 24, 0.08);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  will-change: transform;
+}
+.gallery-hud .wall-label.on {
+  opacity: 1;
+}
+.gallery-hud .label-body {
+  animation: label-in 0.5s ease both;
+}
+@keyframes label-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+.gallery-hud .wall-label p {
+  margin: 0;
+}
+.gallery-hud .artist {
+  font-size: 14px;
+  font-weight: 600;
+}
+.gallery-hud .artist span {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--g-soft);
+}
+.gallery-hud .title {
+  margin-top: 12px !important;
+  font-size: 15px;
+}
+.gallery-hud .title em {
+  font-style: italic;
+}
+.gallery-hud .medium,
+.gallery-hud .dims,
+.gallery-hud .facts {
+  margin-top: 6px !important;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #3d3a36;
+}
+.gallery-hud .credit {
+  margin-top: 12px !important;
+  padding-top: 10px;
+  border-top: 1px solid var(--g-rule);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--g-soft);
+}
+
+/* walk navigator */
+.gallery-hud .walk {
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(250, 249, 246, 0.86);
+  box-shadow:
+    inset 0 0 0 1px var(--g-rule),
+    0 6px 20px rgba(30, 28, 24, 0.06);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.gallery-hud .walk ol {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gallery-hud .walk ol button {
+  display: block;
+  width: 22px;
+  height: 3px;
+  padding: 0;
+  border: none;
+  border-radius: 2px;
+  background: rgba(22, 21, 20, 0.2);
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.gallery-hud .walk ol button:hover {
+  background: rgba(22, 21, 20, 0.45);
+}
+.gallery-hud .walk ol button.on {
+  width: 38px;
+  background: var(--g-ink);
+}
+.gallery-hud .walk .arrow {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  font-size: 15px;
+  color: var(--g-ink);
+  cursor: pointer;
+}
+.gallery-hud .walk .arrow:hover:not(:disabled) {
+  background: rgba(22, 21, 20, 0.07);
+}
+.gallery-hud .walk .arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+.gallery-hud .walk .count {
+  min-width: 50px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+  color: var(--g-soft);
+}
+.gallery-hud .walk-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  margin: 0;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--g-soft);
+}
+
+/* dark rooms: the hint sits on a dark floor there */
+.gallery-hud.dark .walk-hint {
+  color: #b8b3aa;
+}
+.gallery-hud .walk-hint {
+  transition: color 0.5s ease;
+}
+.gallery-hud .room {
+  margin: 0 0 10px !important;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--g-soft);
+}
+
+/* spotlight: while one piece holds the light the rest of the chrome
+   recedes (it comes straight back on hover), and the wall label glows */
+.gallery-hud .exhibition,
+.gallery-hud .walk,
+.gallery-hud .walk-hint,
+.gallery-hud .view-switch {
+  transition:
+    opacity 0.9s ease,
+    color 0.5s ease;
+}
+.gallery-hud.spotlit .exhibition,
+.gallery-hud.spotlit .walk,
+.gallery-hud.spotlit .walk-hint,
+.gallery-hud.spotlit .view-switch {
+  opacity: 0.28;
+  transition-duration: 1.4s;
+}
+.gallery-hud.spotlit .exhibition:hover,
+.gallery-hud.spotlit .walk:hover,
+.gallery-hud.spotlit .view-switch:hover,
+.gallery-hud.spotlit .view-switch:focus-within,
+.gallery-hud.spotlit .walk:focus-within {
+  opacity: 1;
+  transition-duration: 0.25s;
+}
+.gallery-hud.open .exhibition,
+.gallery-hud.open .walk {
+  pointer-events: auto;
+}
+.gallery-hud .wall-label {
+  transition:
+    opacity 0.35s ease,
+    box-shadow 1.4s ease;
+}
+.gallery-hud.spotlit .wall-label {
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.04),
+    0 2px 6px rgba(30, 28, 24, 0.08),
+    0 0 46px rgba(255, 236, 200, 0.28);
+}
+
+/* Details | Gallery switch, mirroring the panel's tabs */
+.gallery-hud .view-switch {
+  position: absolute;
+  right: 24px;
+  top: 22px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(250, 249, 246, 0.9);
+  box-shadow:
+    inset 0 0 0 1px var(--g-rule),
+    0 6px 20px rgba(30, 28, 24, 0.08);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.gallery-hud .view-switch button {
+  border: none;
+  border-radius: 999px;
+  padding: 7px 16px;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 550;
+  letter-spacing: 0.04em;
+  color: #6f6b65;
+  cursor: pointer;
+}
+.gallery-hud .view-switch button:hover {
+  color: #161514;
+}
+.gallery-hud .view-switch button.on {
+  color: #fff;
+  background: #161514;
+  cursor: default;
+}
+.gallery-hud .view-switch .close {
+  width: 30px;
+  padding: 7px 0;
+  margin-left: 4px;
+}
+
+@media (max-width: 1280px) {
+  .gallery-hud .exhibition .intro {
+    display: none;
+  }
+}
+/* narrower windows: the frame needs the wall the exhibition card sits on */
+@media (max-width: 1180px), (max-height: 640px) {
+  .gallery-hud .exhibition {
+    display: none;
+  }
+}
+@media (max-width: 768px) {
+  .gallery-hud .exhibition {
+    display: none;
+  }
+  .gallery-hud .wall-label {
+    width: min(320px, calc(100vw - 32px));
+  }
+  .gallery-hud .walk {
+    bottom: 26px;
+    gap: 8px;
+  }
+  .gallery-hud .walk ol button {
+    width: 12px;
+  }
+  .gallery-hud .walk ol button.on {
+    width: 22px;
+  }
+  .gallery-hud .walk-hint {
+    display: none;
+  }
+  .gallery-hud .view-switch {
+    top: auto;
+    bottom: 84px;
+    right: 50%;
+    transform: translateX(50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gallery-hud .label-body {
+    animation: none;
+  }
+}

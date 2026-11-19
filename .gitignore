@@ -19,5 +19,8 @@ Thumbs.db
 # downloaded capture sources (re-fetched by import-real-splats.mjs)
 .cache/
 
-# generated splat assets
-/public/splats/
+# generated splat assets are committed: the hosted build (Vercel) builds the
+# manifest from public/splats, and nothing there regenerates them
+
+# vercel cli link
+.vercel/

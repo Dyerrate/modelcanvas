@@ -11,6 +11,10 @@ export const motionState = { speed: 0, vx: 0, vy: 0 };
 /** The talent roster the canvas is currently showing. */
 export type TalentBoard = 'female' | 'male';
 
+/** A focused model opens on its details (landing) and can step into the
+ *  gallery of its looks. */
+export type FocusView = 'details' | 'gallery';
+
 interface BoardState {
   /** Active talent board — each board is its own canvas with its own roster. */
   board: TalentBoard;
@@ -23,8 +27,12 @@ interface BoardState {
   isDragging: boolean;
   /** The single tile currently allowed to be live (concurrency cap = 1). */
   activeTileId: string | null;
-  /** Tile opened in the detail panel via click. */
+  /** Tile opened (focused) via click. */
   selectedId: string | null;
+  /** Which face of the focused model is showing. */
+  view: FocusView;
+  /** Board position of the focused tile, for re-framing between views. */
+  anchor: { x: number; y: number } | null;
   /** Pan clamp half-extents, set by Board from the grid dimensions. */
   bounds: { x: number; y: number };
   /** When set, Board eases the pan toward this point (e.g. centering a
@@ -42,6 +50,8 @@ interface BoardState {
   setDragging: (dragging: boolean) => void;
   setActiveTile: (id: string | null) => void;
   setSelected: (id: string | null) => void;
+  setView: (view: FocusView) => void;
+  setAnchor: (anchor: { x: number; y: number } | null) => void;
   setBounds: (x: number, y: number) => void;
   setPanTarget: (target: { x: number; y: number } | null) => void;
   setFocusRotation: (yaw: number, pitch: number) => void;
@@ -51,7 +61,8 @@ interface BoardState {
 const clamp = (v: number, limit: number) => Math.min(limit, Math.max(-limit, v));
 /** Keep pitch shy of straight up/down so the orbit never flips through the pole. */
 const FOCUS_PITCH_LIMIT = 1.3;
-const MIN_FOCUS_ZOOM_SCALE = 1;
+// below 1 so a gallery hang can still fit a short window
+const MIN_FOCUS_ZOOM_SCALE = 0.45;
 const MAX_FOCUS_ZOOM_SCALE = 6;
 
 export const useBoardStore = create<BoardState>((set, get) => ({
@@ -61,6 +72,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   isDragging: false,
   activeTileId: null,
   selectedId: null,
+  view: 'details',
+  anchor: null,
   bounds: { x: 0, y: 0 },
   panTarget: null,
   focusYaw: 0,
@@ -78,7 +91,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   setDragging: (isDragging) => set({ isDragging }),
   setActiveTile: (activeTileId) => set({ activeTileId }),
   // reset the orbit whenever focus opens/closes/switches models
-  setSelected: (selectedId) => set({ selectedId, focusYaw: 0, focusPitch: 0, focusZoomScale: 1 }),
+  setSelected: (selectedId) =>
+    set({ selectedId, view: 'details', focusYaw: 0, focusPitch: 0, focusZoomScale: 1 }),
+  setView: (view) => set({ view, focusYaw: 0, focusPitch: 0 }),
+  setAnchor: (anchor) => set({ anchor }),
   setBounds: (x, y) => set({ bounds: { x, y } }),
   setPanTarget: (target) => {
     if (!target) return set({ panTarget: null });

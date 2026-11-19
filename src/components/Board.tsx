@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo, useRef } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import type { Group } from 'three';
@@ -7,6 +7,8 @@ import type { SplatEntry } from '../types/manifest';
 import { useBoardStore, type TalentBoard } from '../hooks/useBoardStore';
 import { useDragPan } from '../hooks/useDragPan';
 import CharacterTile from './CharacterTile';
+// the gallery set only downloads once a model is focused
+const GalleryStage = lazy(() => import('./GalleryStage'));
 
 // spread the models far apart — the board should feel like a space to
 // wander, not a contact sheet
@@ -75,6 +77,18 @@ export default function Board() {
 
   const placements = useMemo(() => computeGrid(boardEntries(board), board), [board]);
 
+  // a focused model's gallery view hangs its looks; the hang stays mounted
+  // through its own exit fade and unmounts itself via onExited
+  const selectedId = useBoardStore((s) => s.selectedId);
+  const view = useBoardStore((s) => s.view);
+  const [stageId, setStageId] = useState<string | null>(null);
+  useEffect(() => {
+    if (view === 'gallery' && placements.some((p) => p.entry.id === selectedId)) {
+      setStageId(selectedId);
+    }
+  }, [selectedId, view, placements]);
+  const staged = placements.find((p) => p.entry.id === stageId);
+
   useEffect(() => {
     const bx = Math.max(...placements.map((p) => Math.abs(p.x))) + PAN_MARGIN;
     const by = Math.max(...placements.map((p) => Math.abs(p.y))) + PAN_MARGIN;
@@ -107,6 +121,17 @@ export default function Board() {
           <CharacterTile key={`${board}:${entry.id}`} entry={entry} x={x} y={y} />
         ))}
       </Suspense>
+      {staged && (
+        <Suspense fallback={null}>
+          <GalleryStage
+            key={staged.entry.id}
+            entryId={staged.entry.id}
+            x={staged.x}
+            y={staged.y}
+            onExited={() => setStageId(null)}
+          />
+        </Suspense>
+      )}
     </group>
   );
 }

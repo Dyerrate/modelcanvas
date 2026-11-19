@@ -4,7 +4,7 @@ Interactive static site for browsing human-scale Gaussian splat models on a drag
 Behavior summary:
 
 - Hover promotes a tile from thumbnail to live splat rendering.
-- Click selects a model, opens metadata in a detail panel, and recenters camera pan.
+- Click opens the model's editorial cover view (masthead, look, what is worn, measurements); models with several captures switch looks there, and the gallery of looks is one step away.
 - Drag pans the board with inertial momentum and exits selection/focus mode.
 
 The app is Astro + one React Three Fiber island (`client:only="react"`), so Three.js only runs in the browser.
@@ -33,7 +33,6 @@ The app is Astro + one React Three Fiber island (`client:only="react"`), so Thre
 | `npm run build` | Build static output to `dist/` |
 | `npm run preview` | Preview built site |
 | `npm run manifest` | Rebuild `src/data/splat-manifest.json` from assets |
-| `npm run splats:placeholder` | Generate synthetic placeholder `.splat` + `.png` files from metadata |
 
 ## Data and asset contract
 
@@ -56,16 +55,7 @@ The app is Astro + one React Three Fiber island (`client:only="react"`), so Thre
 - Merges matching metadata entry by `id` (`id` must equal splat basename).
 - Logs warnings for missing thumbnails or missing metadata.
 
-## Placeholder generation flow
-
-`scripts/generate-placeholder-splats.mjs` creates deterministic mannequin-like splats and thumbnails from `model-meta.json`.
-
-- Output:
-	- `public/splats/<id>.splat`
-	- `public/thumbs/<id>.png`
-- Scale contract: `REF_HEIGHT_M = 2.3` must stay aligned with `CharacterTile.tsx` for thumbnail/splat crossfade alignment.
-
-## Replacing placeholders with real captures
+## Adding a capture
 
 1. Export each model as `.splat` and place in `public/splats/<id>.splat`.
 2. Keep each splat under **24 MB**.
@@ -73,7 +63,7 @@ The app is Astro + one React Three Fiber island (`client:only="react"`), so Thre
 4. Add or update matching metadata entry in `src/data/model-meta.json`.
 5. Run `npm run manifest`.
 
-Keep raw capture/intermediate files outside `public/` (for example in a gitignored source-assets folder).
+Keep raw capture/intermediate files outside `public/` (for example in a gitignored source-assets folder). The generated `public/splats/` and `public/thumbs/` files are committed: the hosted build reads them from the repo.
 
 ## Source-quality captures (Spark + SPZ)
 
@@ -101,12 +91,13 @@ the 8-bit canvas rounds them away and leaves green/purple blotches on skin.
 ## Runtime architecture
 
 - `src/pages/index.astro`: page shell and React island mount.
-- `src/components/BoardIsland.tsx`: owns one `<Canvas>`, detail panel overlay, and motion FX overlay.
+- `src/components/BoardIsland.tsx`: owns one `<Canvas>`, the cover view and gallery overlays, and motion FX.
 - `src/components/Board.tsx`: computes deterministic scattered grid layout, applies pan transform, sets pan bounds.
 - `src/components/CharacterTile.tsx`: tile state machine (`thumbnail → loading → live → demoting`) and click/hover behavior.
 - `src/hooks/useDragPan.ts`: pointer-driven panning + momentum; no OrbitControls.
 - `src/components/CameraRig.tsx`: smooth orthographic zoom between base and focus zoom.
-- `src/components/DetailPanel.tsx`: selected model metadata panel.
+- `src/components/EditorialView.tsx` + `EditorialDriver.tsx`: the cover view a click opens (anime.js), and the model's entrance. Copy comes from `src/lib/editorial.ts`.
+- `src/components/SparkSplat.tsx`: source-quality splat pass; cached between changes and drawn at reduced resolution while the figure moves.
 - `src/components/MotionFx.tsx`: velocity-driven blur, chromatic split, and scratch overlay.
 - `src/hooks/useBoardStore.ts`: global interaction state (`pan`, `dragging`, `activeTileId`, `selectedId`, `panTarget`).
 
