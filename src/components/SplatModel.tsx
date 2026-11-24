@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useLayoutEffect, useRef } from 'react';
+import { Suspense, use, useCallback, useLayoutEffect, useRef } from 'react';
 import { Splat } from '@react-three/drei';
 import type { Group, Mesh, ShaderMaterial } from 'three';
 
@@ -32,6 +32,32 @@ function patchForOrthoCamera(root: Group) {
   });
 }
 
+/**
+ * drei's loader needs a Content-Length header, but hosts that compress on
+ * the fly (Vercel serves .splat as brotli, chunked) drop it, and drei then
+ * throws a bare string. Fetch the bytes ourselves and hand drei a blob URL,
+ * which always reports its length. Cached per src for the page lifetime.
+ */
+const blobUrls = new Map<string, Promise<string>>();
+function splatBlobUrl(src: string): Promise<string> {
+  let p = blobUrls.get(src);
+  if (!p) {
+    p = fetch(src)
+      .then((r) => {
+        if (!r.ok) throw new Error(`${src}: HTTP ${r.status}`);
+        return r.blob();
+      })
+      .then((b) => URL.createObjectURL(b));
+    p.catch(() => blobUrls.delete(src));
+    blobUrls.set(src, p);
+  }
+  return p;
+}
+
+function BlobSplat({ src }: { src: string }) {
+  return <Splat src={use(splatBlobUrl(src))} />;
+}
+
 /** Mounts only once every suspending sibling has resolved — Suspense
  *  resolution is the "splat is ready" signal. Patches the material before
  *  the browser paints the first ready frame. */
@@ -63,7 +89,7 @@ export default function SplatModel({ src, onReady }: SplatModelProps) {
   return (
     <group ref={group}>
       <Suspense fallback={null}>
-        <Splat src={src} />
+        <BlobSplat src={src} />
         <ReadySignal onReady={handleReady} />
       </Suspense>
     </group>
